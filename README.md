@@ -26,7 +26,7 @@
 - gin
 ### 配置
 - env
-- shell
+- urfave/cli
 ### 前端框架
 - 基础 svelte.js
 - 搜索 fusejs
