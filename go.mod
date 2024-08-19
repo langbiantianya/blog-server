@@ -2,7 +2,11 @@ module blog-server
 
 go 1.22.2
 
-require github.com/urfave/cli/v2 v2.27.4
+require (
+	github.com/gin-gonic/gin v1.10.0
+	github.com/urfave/cli/v2 v2.27.4
+	github.com/yuin/goldmark v1.7.4
+)
 
 require (
 	github.com/bytedance/sonic v1.12.1 // indirect
@@ -12,7 +16,6 @@ require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.5 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/gin-gonic/gin v1.10.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.22.0 // indirect

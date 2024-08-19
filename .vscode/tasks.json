@@ -1,0 +1,39 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "go",
+			"label": "go: test package",
+			"command": "test",
+			"args": [
+				"-v",
+				"${fileDirname}",
+			],
+			"problemMatcher": [
+				"$go"
+			],
+			"group": "test",
+			"detail": "cd /home/lbty/code/go/blog-server; go test ${fileDirname}"
+		},
+		{
+			"label": "go mod tidy",
+			"type": "shell",
+			"command": "go mod tidy",
+			"problemMatcher": []
+		},
+		{
+			"type": "go",
+			"label": "go: test workspace",
+			"command": "test",
+			"args": [
+				"-v",
+				"./...",
+			],
+			"problemMatcher": [
+				"$go"
+			],
+			"group": "test",
+			"detail": "cd /home/lbty/code/go/blog-server; go test ./..."
+		}
+	]
+}
