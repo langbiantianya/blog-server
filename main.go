@@ -15,8 +15,11 @@ func main() {
 		Usage: "博客",
 		Action: func(ctx *cli.Context) error {
 			cmd.Run(context.Background(), func() error {
-				go cmd.StartStaticServer()
-				go cmd.StartApiServer()
+				path := ctx.String("path")
+				port := ctx.Int64Slice("port")
+				// md := ctx.String("md")
+				go cmd.StartStaticServer(path, int(port[0]))
+				go cmd.StartApiServer(int(port[1]))
 				return nil
 			}, func() error {
 
@@ -25,39 +28,26 @@ func main() {
 			return nil
 		},
 		Flags: []cli.Flag{
+			&cli.Int64SliceFlag{
+				Name:        "port",
+				DefaultText: "8000,8001",
+				Value:       cli.NewInt64Slice(8000, 8001),
+				Usage:       "端口,第一个是静态代理端口，第二个是后台api",
+				Required:    false,
+			},
 			&cli.PathFlag{
 				Name:        "path",
 				DefaultText: "./www/html",
+				Value:       "./www/html",
 				Usage:       "静态页面文件夹",
 				Required:    false,
 			},
 			&cli.PathFlag{
 				Name:        "md",
 				DefaultText: "./md",
+				Value:       "./md",
 				Usage:       "Markdown存放路径",
 				Required:    false,
-			},
-		},
-		Commands: []*cli.Command{
-			{
-				Name:  "port",
-				Usage: "端口",
-				Flags: []cli.Flag{
-					&cli.IntFlag{
-						Name:        "static",
-						DefaultText: "8000",
-						Usage:       "静态页面端口",
-						Required:    false,
-					}, &cli.IntFlag{
-						Name:        "api",
-						DefaultText: "8001",
-						Usage:       "控制台端口",
-						Required:    false,
-					},
-				},
-				Action: func(ctx *cli.Context) error {
-					return nil
-				},
 			},
 		},
 	}

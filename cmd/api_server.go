@@ -1,13 +1,17 @@
 package cmd
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
 
-func StartApiServer() {
+	"github.com/gin-gonic/gin"
+)
+
+func StartApiServer(port int) {
 	r := gin.Default()
 	// r.GET("/ping", func(c *gin.Context) {
 	// 	c.JSON(200, gin.H{
 	// 		"message": "pong",
 	// 	})
 	// })
-	r.Run(":8001")
+	r.Run(fmt.Sprintf(":%d", port))
 }

@@ -20,7 +20,7 @@ func Run(ctx context.Context, start func() error, clean func() error) error {
 EXIT:
 	for {
 		sig := <-sc
-		log.Println(ctx, "接收到信号", sig.String())
+		log.Print(ctx, "接收到信号", sig.String())
 		switch sig {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
 			state = 0
@@ -34,7 +34,7 @@ EXIT:
 	if err != nil {
 		log.Fatalln(err)
 	}
-	log.Println(ctx, "服务退出")
+	log.Print(ctx, "服务退出")
 	time.Sleep(time.Second)
 	os.Exit(state)
 	return nil
