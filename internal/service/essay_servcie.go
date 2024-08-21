@@ -18,9 +18,9 @@ type EssayService struct {
 	essayRepo repo.IEssayRepo
 }
 
-func NewEssayRepo(db *repo.IEssayRepo) IEssayService {
+func NewEssayService(db repo.IEssayRepo) IEssayService {
 	return &EssayService{
-		essayRepo: *db,
+		essayRepo: db,
 	}
 }
 

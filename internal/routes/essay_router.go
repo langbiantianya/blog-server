@@ -19,7 +19,7 @@ type EssayRouter struct {
 }
 
 func NewEssayRouter(essayService service.IEssayService) IEssayRouter {
-	return EssayRouter{
+	return &EssayRouter{
 		essayService: essayService,
 	}
 }

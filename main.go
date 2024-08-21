@@ -2,11 +2,14 @@ package main
 
 import (
 	"blog-server/cmd"
+	"blog-server/internal/constantx"
 	"context"
 	"log"
 	"os"
 
 	"github.com/urfave/cli/v2"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -17,9 +20,13 @@ func main() {
 			cmd.Run(context.Background(), func() error {
 				path := ctx.String("path")
 				port := ctx.Int64Slice("port")
-				// md := ctx.String("md")
+				db, err := gorm.Open(sqlite.Open("./static/sqlite/sqlite.db"), &gorm.Config{})
+				if err != nil {
+					panic(err)
+				}
+				constantx.Db = db
 				go cmd.StartStaticServer(path, int(port[0]))
-				go cmd.StartApiServer(int(port[1]))
+				go cmd.StartApiServer(int(port[1]), InitApis())
 				return nil
 			}, func() error {
 
