@@ -3,6 +3,8 @@ package main
 import (
 	"blog-server/cmd"
 	"blog-server/internal/constantx"
+	"blog-server/internal/entity"
+
 	"context"
 	"log"
 	"os"
@@ -25,6 +27,7 @@ func main() {
 					panic(err)
 				}
 				constantx.Db = db
+				db.AutoMigrate(&entity.Essay{}, &entity.Tag{})
 				go cmd.StartStaticServer(path, int(port[0]))
 				go cmd.StartApiServer(int(port[1]), InitApis())
 				return nil
