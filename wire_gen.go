@@ -11,15 +11,17 @@ import (
 	"blog-server/internal/repo"
 	"blog-server/internal/routes"
 	"blog-server/internal/service"
+	"github.com/urfave/cli/v2"
 )
 
 // Injectors from wire.go:
 
-func InitApis() *cmd.ApiRoutes {
+func InitApp(ctx *cli.Context) cmd.Config {
 	iEssayRepo := repo.NewEssayRepo()
 	iTagRepo := repo.NewTagRepo()
 	iEssayService := service.NewEssayService(iEssayRepo, iTagRepo)
 	iEssayRouter := routes.NewEssayRouter(iEssayService)
 	apiRoutes := cmd.NewApiRoutes(iEssayRouter)
-	return apiRoutes
+	config := cmd.NewConfig(ctx, apiRoutes)
+	return config
 }

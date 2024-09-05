@@ -10,14 +10,15 @@ import (
 	"blog-server/internal/service"
 
 	"github.com/google/wire"
+	"github.com/urfave/cli/v2"
 )
 
-func InitApis() *cmd.ApiRoutes {
+func InitApp(ctx *cli.Context) cmd.Config {
 	wire.Build(
 		repo.Set,
 		service.Set,
 		routes.Set,
 		cmd.Set,
 	)
-	return nil
+	return cmd.Config{}
 }
