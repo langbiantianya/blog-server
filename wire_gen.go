@@ -17,7 +17,8 @@ import (
 
 func InitApis() *cmd.ApiRoutes {
 	iEssayRepo := repo.NewEssayRepo()
-	iEssayService := service.NewEssayService(iEssayRepo)
+	iTagRepo := repo.NewTagRepo()
+	iEssayService := service.NewEssayService(iEssayRepo, iTagRepo)
 	iEssayRouter := routes.NewEssayRouter(iEssayService)
 	apiRoutes := cmd.NewApiRoutes(iEssayRouter)
 	return apiRoutes

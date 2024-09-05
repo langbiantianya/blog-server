@@ -1,17 +1,22 @@
 package routes
 
 import (
+	"blog-server/internal/entity"
 	"blog-server/internal/service"
+	"blog-server/public/utils"
+	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 type IEssayRouter interface {
-	Info(c *gin.Context)
-	Add(c *gin.Context)
-	Update(c *gin.Context)
-	Hide(c *gin.Context)
-	Delete(c *gin.Context)
+	Info(*gin.Context)
+	Add(*gin.Context)
+	Update(*gin.Context)
+	Hide(*gin.Context)
+	Delete(*gin.Context)
+	Publish(*gin.Context)
 }
 
 type EssayRouter struct {
@@ -25,25 +30,91 @@ func NewEssayRouter(essayService service.IEssayService) IEssayRouter {
 }
 
 func (essay EssayRouter) Info(c *gin.Context) {
-	panic("TODO")
+	id := c.Param("id")
+	uid, err := strconv.ParseUint(id, 10, 32)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	res, err := essay.essayService.Info(uint(uid))
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusOK, res)
 }
 
 func (essay EssayRouter) Add(c *gin.Context) {
-	panic("TODO")
-
+	var params entity.Essay
+	err := c.ShouldBindJSON(&params)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	err = essay.essayService.Add(params)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.String(http.StatusOK, "OK")
 }
 
 func (essay EssayRouter) Update(c *gin.Context) {
-	panic("TODO")
-
+	var params entity.Essay
+	err := c.ShouldBindJSON(&params)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	err = essay.essayService.Update(params)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.String(http.StatusOK, "OK")
 }
 
 func (essay EssayRouter) Hide(c *gin.Context) {
-	panic("TODO")
-
+	id := c.Param("id")
+	uid, err := strconv.ParseUint(id, 10, 32)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	err = essay.essayService.Hide(uint(uid))
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.String(http.StatusOK, "OK")
 }
 
 func (essay EssayRouter) Delete(c *gin.Context) {
-	panic("TODO")
+	id := c.Param("id")
+	uid, err := strconv.ParseUint(id, 10, 32)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	err = essay.essayService.Delete(uint(uid))
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.String(http.StatusOK, "OK")
+}
 
+func (essay EssayRouter) Publish(c *gin.Context) {
+	ids := c.QueryArray("ids")
+	uids := utils.Map(ids, func(index int, item string) (uint, error) {
+		uid, err := strconv.ParseUint(item, 10, 32)
+		return uint(uid), err
+	})
+
+	err := essay.essayService.Publish(uids)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.String(http.StatusOK, "OK")
 }

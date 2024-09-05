@@ -24,6 +24,12 @@ func NewApiRoutes(essay routes.IEssayRouter) *ApiRoutes {
 }
 
 func (api ApiRoutes) apiV1(r *gin.Engine) {
-	var v1 = r.Group("/api/v1")
-	v1.GET("/essay/:id", api.essay.Info)
+	v1 := r.Group("/api/v1")
+	essay := v1.Group("/essay")
+	essay.GET("/:id", api.essay.Info)
+	essay.POST("/", api.essay.Add)
+	essay.PUT("/", api.essay.Update)
+	essay.DELETE("/:id", api.essay.Delete)
+	essay.PUT("/hide/:id", api.essay.Hide)
+	essay.PUT("/publish", api.essay.Publish)
 }
