@@ -70,7 +70,7 @@ func (essay EssayRepo) Add(params entity.Essay) error {
 }
 
 func (essay EssayRepo) Update(params entity.Essay) error {
-	if result := essay.db.Model(&entity.Essay{}).Where("id", params.ID).Updates(&params); result.Error != nil {
+	if result := essay.db.Model(&entity.Essay{}).Preload("Tags").Where("entity.id", params.ID).Updates(&params); result.Error != nil {
 		return result.Error
 	}
 	return nil
@@ -80,6 +80,7 @@ func (essay EssayRepo) Update(params entity.Essay) error {
 func (essay EssayRepo) Hide(id uint) error {
 	e := &entity.Essay{}
 	e.ID = id
+	e.Hide = true
 	if err := essay.Update(*e); err != nil {
 		return err
 	}
@@ -91,7 +92,7 @@ func (essay EssayRepo) Delete(id uint) error {
 	if err != nil {
 		return err
 	}
-	if result := essay.db.Delete(e); result.Error != nil {
+	if result := essay.db.Model(&entity.Essay{}).Delete(e); result.Error != nil {
 		return result.Error
 	}
 	return nil
