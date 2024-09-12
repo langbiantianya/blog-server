@@ -11,9 +11,10 @@ import (
 
 	"github.com/google/wire"
 	"github.com/urfave/cli/v2"
+	"gorm.io/gorm"
 )
 
-func InitApp(ctx *cli.Context) cmd.Config {
+func InitApp(db *gorm.DB, ctx *cli.Context) cmd.Config {
 	wire.Build(
 		repo.Set,
 		service.Set,

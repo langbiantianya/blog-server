@@ -1,9 +1,6 @@
 package cmd
 
 import (
-	"blog-server/internal/constantx"
-	"blog-server/internal/entity"
-
 	"context"
 	"log"
 	"os"
@@ -12,8 +9,6 @@ import (
 	"time"
 
 	"github.com/urfave/cli/v2"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
 )
 
 type Config struct {
@@ -34,12 +29,6 @@ func NewConfig(ctx *cli.Context, apiRoutes *ApiRoutes) Config {
 }
 
 func (c Config) StartServer() {
-	db, err := gorm.Open(sqlite.Open("./static/sqlite/sqlite.db"), &gorm.Config{})
-	if err != nil {
-		panic(err)
-	}
-	constantx.Db = db
-	db.AutoMigrate(&entity.Essay{}, &entity.Tag{})
 	go StartStaticServer(c.staticPath, c.staticPort)
 	go StartApiServer(c.apiPort, c.apiRoutes)
 }

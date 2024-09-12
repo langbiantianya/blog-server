@@ -1,7 +1,6 @@
 package repo
 
 import (
-	"blog-server/internal/constantx"
 	"blog-server/internal/entity"
 	"blog-server/public/utils"
 	"errors"
@@ -23,8 +22,8 @@ type EssayRepo struct {
 	db *gorm.DB
 }
 
-func NewEssayRepo() IEssayRepo {
-	return &EssayRepo{db: constantx.Db}
+func NewEssayRepo(db *gorm.DB) IEssayRepo {
+	return &EssayRepo{db: db}
 }
 
 func (essay EssayRepo) Info(id uint) (*entity.Essay, error) {
@@ -88,7 +87,7 @@ func (essay EssayRepo) Hide(id uint) error {
 }
 
 func (essay EssayRepo) Delete(id uint) error {
-	e,err := essay.Info(id)
+	e, err := essay.Info(id)
 	if err != nil {
 		return err
 	}

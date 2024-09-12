@@ -1,7 +1,6 @@
 package repo
 
 import (
-	"blog-server/internal/constantx"
 	"blog-server/internal/entity"
 	"errors"
 
@@ -19,9 +18,9 @@ type TagRepo struct {
 	db *gorm.DB
 }
 
-func NewTagRepo() ITagRepo {
+func NewTagRepo(db *gorm.DB) ITagRepo {
 	return TagRepo{
-		constantx.Db,
+		db,
 	}
 }
 

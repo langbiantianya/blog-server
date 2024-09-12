@@ -12,13 +12,14 @@ import (
 	"blog-server/internal/routes"
 	"blog-server/internal/service"
 	"github.com/urfave/cli/v2"
+	"gorm.io/gorm"
 )
 
 // Injectors from wire.go:
 
-func InitApp(ctx *cli.Context) cmd.Config {
-	iEssayRepo := repo.NewEssayRepo()
-	iTagRepo := repo.NewTagRepo()
+func InitApp(db *gorm.DB, ctx *cli.Context) cmd.Config {
+	iEssayRepo := repo.NewEssayRepo(db)
+	iTagRepo := repo.NewTagRepo(db)
 	iEssayService := service.NewEssayService(iEssayRepo, iTagRepo)
 	iEssayRouter := routes.NewEssayRouter(iEssayService)
 	apiRoutes := cmd.NewApiRoutes(iEssayRouter)
