@@ -27,6 +27,7 @@ func (api ApiRoutes) apiV1(r *gin.Engine) {
 	v1 := r.Group("/api/v1")
 	essay := v1.Group("/essay")
 	essay.GET("/:id", api.essay.Info)
+	essay.GET("/list", api.essay.List)
 	essay.POST("/", api.essay.Add)
 	essay.PUT("/", api.essay.Update)
 	essay.DELETE("/:id", api.essay.Delete)

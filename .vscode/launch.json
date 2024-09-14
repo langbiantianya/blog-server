@@ -14,7 +14,7 @@
             "env": {
                 "GIN_MODE": "debug"
             },
-            "preLaunchTask": "go mod tidy"
+            "preLaunchTask": "before debuge command"
         }
     ]
 }

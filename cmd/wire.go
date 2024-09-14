@@ -2,4 +2,4 @@ package cmd
 
 import "github.com/google/wire"
 
-var Set = wire.NewSet(NewApiRoutes, NewConfig)
+var Set = wire.NewSet(NewApiRoutes, NewApp)

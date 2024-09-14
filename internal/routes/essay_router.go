@@ -2,6 +2,7 @@ package routes
 
 import (
 	"blog-server/internal/entity"
+	"blog-server/internal/entity/dto"
 	"blog-server/internal/service"
 	"blog-server/public/utils"
 	"encoding/base64"
@@ -13,6 +14,7 @@ import (
 
 type IEssayRouter interface {
 	Info(*gin.Context)
+	List(*gin.Context)
 	Add(*gin.Context)
 	Update(*gin.Context)
 	Hide(*gin.Context)
@@ -30,6 +32,22 @@ func NewEssayRouter(essayService service.IEssayService) IEssayRouter {
 	}
 }
 
+func (essay EssayRouter) List(c *gin.Context) {
+	var params dto.EssayDto
+	err := c.ShouldBindQuery(&params)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	res, err := essay.essayService.List(params)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
 func (essay EssayRouter) Info(c *gin.Context) {
 	id := c.Param("id")
 	uid, err := strconv.ParseUint(id, 10, 32)
@@ -44,11 +62,7 @@ func (essay EssayRouter) Info(c *gin.Context) {
 	}
 
 	if res.Post != "" {
-		strb, err := base64.StdEncoding.DecodeString(res.Post)
-		if err != nil {
-			c.Error(err)
-			return
-		}
+		strb := base64.StdEncoding.EncodeToString([]byte(res.Post))
 		res.Post = string(strb)
 	}
 

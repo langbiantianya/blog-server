@@ -17,12 +17,12 @@ import (
 
 // Injectors from wire.go:
 
-func InitApp(db *gorm.DB, ctx *cli.Context) cmd.Config {
+func InitApp(db *gorm.DB, ctx *cli.Context) cmd.App {
 	iEssayRepo := repo.NewEssayRepo(db)
 	iTagRepo := repo.NewTagRepo(db)
 	iEssayService := service.NewEssayService(iEssayRepo, iTagRepo)
 	iEssayRouter := routes.NewEssayRouter(iEssayService)
 	apiRoutes := cmd.NewApiRoutes(iEssayRouter)
-	config := cmd.NewConfig(ctx, apiRoutes)
-	return config
+	app := cmd.NewApp(apiRoutes)
+	return app
 }

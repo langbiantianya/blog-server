@@ -16,7 +16,19 @@
 			"detail": "cd /home/lbty/code/go/blog-server; go test ${fileDirname}"
 		},
 		{
-			"label": "go mod tidy",
+			"label": "install wire",
+			"type": "shell",
+			"command": "go mod tidy && go install github.com/google/wire/cmd/wire@latest",
+			"problemMatcher": []
+		},
+		{
+			"label": "wire",
+			"type": "shell",
+			"command": "wire",
+			"problemMatcher": []
+		},
+		{
+			"label": "before debuge command",
 			"type": "shell",
 			"command": "go mod tidy",
 			"problemMatcher": []

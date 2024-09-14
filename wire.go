@@ -14,12 +14,12 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitApp(db *gorm.DB, ctx *cli.Context) cmd.Config {
+func InitApp(db *gorm.DB, ctx *cli.Context) cmd.App {
 	wire.Build(
 		repo.Set,
 		service.Set,
 		routes.Set,
 		cmd.Set,
 	)
-	return cmd.Config{}
+	return cmd.App{}
 }

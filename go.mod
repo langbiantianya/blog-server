@@ -1,6 +1,6 @@
 module blog-server
 
-go 1.23.0
+go 1.23.1
 
 require (
 	github.com/gin-gonic/gin v1.10.0

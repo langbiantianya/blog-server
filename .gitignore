@@ -16,6 +16,10 @@
 # sqlite3文件
 *.db
 /*.html
+# debugger
+__debug_bin*
+# 生成的文件
+/www
 # Dependency directories (remove the comment below to include it)
 # vendor/
 

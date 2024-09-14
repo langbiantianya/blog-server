@@ -2,6 +2,7 @@ package main
 
 import (
 	"blog-server/cmd"
+	"blog-server/internal/conf"
 	"blog-server/internal/entity"
 
 	"context"
@@ -11,6 +12,7 @@ import (
 	"github.com/urfave/cli/v2"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func main() {
@@ -19,7 +21,10 @@ func main() {
 		Usage: "博客",
 		Action: func(ctx *cli.Context) error {
 			cmd.Run(context.Background(), func() error {
-				db, err := gorm.Open(sqlite.Open("./static/sqlite/sqlite.db"), &gorm.Config{})
+				conf.InitConfig(ctx)
+				db, err := gorm.Open(sqlite.Open("./static/sqlite/sqlite.db"), &gorm.Config{
+					Logger: logger.Default.LogMode(logger.Info),
+				})
 				if err != nil {
 					panic(err)
 				}

@@ -1,17 +1,20 @@
 package service
 
 import (
+	"blog-server/internal/conf"
 	"blog-server/internal/entity"
+	"blog-server/internal/entity/dto"
 	"blog-server/internal/generation"
 	"blog-server/internal/repo"
 	"fmt"
 	"log"
 	"os"
+	"path"
 )
 
 type IEssayService interface {
 	Info(uint) (*entity.Essay, error)
-	List(entity.Essay) (*[]entity.Essay, error)
+	List(dto.EssayDto) (*[]entity.Essay, error)
 	Add(entity.Essay) error
 	Update(entity.Essay) error
 	Hide(uint) error
@@ -35,7 +38,8 @@ func (essay EssayService) Info(id uint) (*entity.Essay, error) {
 	return essay.essayRepo.Info(id)
 }
 
-func (essay EssayService) List(params entity.Essay) (*[]entity.Essay, error) {
+func (essay EssayService) List(params dto.EssayDto) (*[]entity.Essay, error) {
+	
 	return essay.essayRepo.Find(params)
 }
 
@@ -69,7 +73,12 @@ func (essay EssayService) Publish(ids []uint) error {
 			return err
 		}
 		// 写入文件系统
-		filePath := fmt.Sprintf("%s.html", e.Title)
+		filePath := path.Clean(fmt.Sprintf("%s/essay/", conf.GetConfig().StaticPath))
+		err = os.MkdirAll(filePath, 0755)
+		if err != nil {
+			return err
+		}
+		filePath = path.Clean(fmt.Sprintf("%s/%s.html", filePath, e.Title))
 		file, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			return err

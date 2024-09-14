@@ -1,36 +1,27 @@
 package cmd
 
 import (
+	"blog-server/internal/conf"
 	"context"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
-
-	"github.com/urfave/cli/v2"
 )
 
-type Config struct {
-	staticPath string
-	apiPort    int
-	staticPort int
-	apiRoutes  *ApiRoutes
+type App struct {
+	apiRoutes *ApiRoutes
 }
 
-func NewConfig(ctx *cli.Context, apiRoutes *ApiRoutes) Config {
-	port := ctx.IntSlice("port")
-	return Config{
-		staticPath: ctx.String("path"),
-		apiPort:    port[1],
-		staticPort: port[0],
-		apiRoutes:  apiRoutes,
-	}
+func NewApp(apiRoutes *ApiRoutes) App {
+	return App{apiRoutes}
 }
 
-func (c Config) StartServer() {
-	go StartStaticServer(c.staticPath, c.staticPort)
-	go StartApiServer(c.apiPort, c.apiRoutes)
+func (a App) StartServer() {
+	config := conf.GetConfig()
+	go StartStaticServer(config.StaticPath, config.StaticPort)
+	go StartApiServer(config.ApiPort, a.apiRoutes)
 }
 
 func Run(ctx context.Context, start func() error, clean func() error) error {

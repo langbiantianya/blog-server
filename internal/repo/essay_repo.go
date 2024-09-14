@@ -2,7 +2,7 @@ package repo
 
 import (
 	"blog-server/internal/entity"
-	"blog-server/public/utils"
+	"blog-server/internal/entity/dto"
 	"errors"
 	"fmt"
 
@@ -11,7 +11,7 @@ import (
 
 type IEssayRepo interface {
 	Info(uint) (*entity.Essay, error)
-	Find(entity.Essay) (*[]entity.Essay, error)
+	Find(dto.EssayDto) (*[]entity.Essay, error)
 	Add(entity.Essay) error
 	Update(entity.Essay) error
 	Hide(uint) error
@@ -34,9 +34,9 @@ func (essay EssayRepo) Info(id uint) (*entity.Essay, error) {
 	return &res, nil
 }
 
-func (essay EssayRepo) Find(params entity.Essay) (*[]entity.Essay, error) {
+func (essay EssayRepo) Find(params dto.EssayDto) (*[]entity.Essay, error) {
 	var res []entity.Essay
-	query := essay.db.Model(&entity.Essay{}).Preload("Tags")
+	query := essay.db.Model(&entity.Essay{}).Preload("Tags").Joins("left JOIN essay_tags on essay_tags.essay_id = essays.id").Joins("left JOIN tags ON tags.id = essay_tags.tag_id")
 
 	if params.Title != "" {
 		query.Where("essay.title LIKE ?", fmt.Sprintf("%%%s%%", params.Title))
@@ -47,13 +47,7 @@ func (essay EssayRepo) Find(params entity.Essay) (*[]entity.Essay, error) {
 	}
 
 	if len(params.Tags) != 0 {
-		query.Where("tag.id in ?", utils.Map(params.Tags, func(index int, item *entity.Tag) (uint, error) {
-			if item != nil {
-				return item.ID, nil
-			} else {
-				return 0, fmt.Errorf("item is nil")
-			}
-		}))
+		query.Where("tags.name in ?", params.Tags)
 	}
 
 	if result := query.Find(&res); result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -70,11 +64,57 @@ func (essay EssayRepo) Add(params entity.Essay) error {
 }
 
 func (essay EssayRepo) Update(params entity.Essay) error {
-	if result := essay.db.Model(&entity.Essay{}).Preload("Tags").Where("entity.id", params.ID).Updates(&params); result.Error != nil {
-		return result.Error
-	}
-	return nil
 
+	err := essay.db.Transaction(func(tx *gorm.DB) error {
+		tags := make([]entity.Tag, 0)
+		var t entity.Tag
+		for _, tag := range params.Tags {
+			if tag.ID == 0 {
+				if res := tx.Model(&entity.Tag{}).Save(tag); res.Error != nil {
+					return res.Error
+				}
+				if res := tx.Model(&entity.Tag{}).Where("name = ?", tag.Name).First(&t); res.Error != nil && !errors.Is(res.Error, gorm.ErrRecordNotFound) {
+					return res.Error
+				}
+			} else {
+				if res := tx.Model(&entity.Tag{}).First(&t, tag.ID); res.Error != nil && !errors.Is(res.Error, gorm.ErrRecordNotFound) {
+					return res.Error
+				}
+			}
+			tags = append(tags, t)
+		}
+
+		params.Tags = tags
+		if res := tx.Exec("DELETE FROM essay_tags WHERE essay_id = ?", params.ID); res.Error != nil {
+			return res.Error
+		}
+		if len(tags) > 0 {
+			valueArry := []byte("(?),")
+			essayTags := make([]uint, 0)
+			sql := []byte("INSERT INTO essay_tags (tag_id,essay_id)  VALUES ")
+
+			for _, tag := range tags {
+				sql = append(sql, valueArry...)
+				essayTags = append(essayTags, tag.ID, params.ID)
+			}
+			sqlstr := string(sql)
+			sqlstr = sqlstr[:len(sqlstr)-1]
+			if res := tx.Exec(sqlstr, essayTags); res.Error != nil {
+				return res.Error
+			}
+		}
+
+		if res := tx.Model(&entity.Essay{}).Where("id", params.ID).Updates(params); res.Error != nil {
+			return res.Error
+		}
+
+		return nil
+	})
+	if err != nil {
+		return err
+	} else {
+		return nil
+	}
 }
 
 func (essay EssayRepo) Hide(id uint) error {
