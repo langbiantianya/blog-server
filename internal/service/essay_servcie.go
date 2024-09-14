@@ -39,7 +39,7 @@ func (essay EssayService) Info(id uint) (*entity.Essay, error) {
 }
 
 func (essay EssayService) List(params dto.EssayDto) (*[]entity.Essay, error) {
-	
+
 	return essay.essayRepo.Find(params)
 }
 
