@@ -21,8 +21,10 @@ func InitApp(db *gorm.DB, ctx *cli.Context) cmd.App {
 	iEssayRepo := repo.NewEssayRepo(db)
 	iTagRepo := repo.NewTagRepo(db)
 	iEssayService := service.NewEssayService(iEssayRepo, iTagRepo)
-	iEssayRouter := routes.NewEssayRouter(iEssayService)
-	apiRoutes := cmd.NewApiRoutes(iEssayRouter)
+	iTagService := service.NewTagService(iTagRepo)
+	iEssayRouter := routes.NewEssayRouter(iEssayService, iTagService)
+	iTagRouter := routes.NewTagRouter(iTagService)
+	apiRoutes := cmd.NewApiRoutes(iEssayRouter, iTagRouter)
 	app := cmd.NewApp(apiRoutes)
 	return app
 }

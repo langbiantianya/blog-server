@@ -26,7 +26,7 @@ type EssayRouter struct {
 	essayService service.IEssayService
 }
 
-func NewEssayRouter(essayService service.IEssayService) IEssayRouter {
+func NewEssayRouter(essayService service.IEssayService, tagService service.ITagService) IEssayRouter {
 	return &EssayRouter{
 		essayService: essayService,
 	}

@@ -9,6 +9,7 @@ import (
 
 type ApiRoutes struct {
 	essay routes.IEssayRouter
+	tag   routes.ITagRouter
 }
 
 func StartApiServer(port int, apiRoutes *ApiRoutes) {
@@ -17,9 +18,10 @@ func StartApiServer(port int, apiRoutes *ApiRoutes) {
 	r.Run(fmt.Sprintf(":%d", port))
 }
 
-func NewApiRoutes(essay routes.IEssayRouter) *ApiRoutes {
+func NewApiRoutes(essay routes.IEssayRouter, tag routes.ITagRouter) *ApiRoutes {
 	return &ApiRoutes{
 		essay: essay,
+		tag:   tag,
 	}
 }
 
@@ -33,4 +35,6 @@ func (api ApiRoutes) apiV1(r *gin.Engine) {
 	essay.DELETE("/:id", api.essay.Delete)
 	essay.PUT("/hide/:id", api.essay.Hide)
 	essay.PUT("/publish", api.essay.Publish)
+	tag := v1.Group("/tag")
+	tag.GET("/list", api.tag.List)
 }

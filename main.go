@@ -4,6 +4,7 @@ import (
 	"blog-server/cmd"
 	"blog-server/internal/conf"
 	"blog-server/internal/entity"
+	"path"
 
 	"context"
 	"log"
@@ -22,6 +23,10 @@ func main() {
 		Action: func(ctx *cli.Context) error {
 			cmd.Run(context.Background(), func() error {
 				conf.InitConfig(ctx)
+				err := os.MkdirAll(path.Clean("./static/sqlite/"), 0755)
+				if err != nil {
+					panic(err)
+				}
 				db, err := gorm.Open(sqlite.Open("./static/sqlite/sqlite.db"), &gorm.Config{
 					Logger: logger.Default.LogMode(logger.Info),
 				})
