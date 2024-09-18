@@ -36,7 +36,7 @@ func (essay EssayRepo) Info(id uint) (*entity.Essay, error) {
 
 func (essay EssayRepo) Find(params dto.EssayDto) (*[]entity.Essay, error) {
 	var res []entity.Essay
-	query := essay.db.Model(&entity.Essay{}).Preload("Tags").Joins("left JOIN essay_tags on essay_tags.essay_id = essays.id").Joins("left JOIN tags ON tags.id = essay_tags.tag_id")
+	query := essay.db.Model(&entity.Essay{}).Distinct().Preload("Tags").Joins("left JOIN essay_tags on essay_tags.essay_id = essays.id").Joins("left JOIN tags ON tags.id = essay_tags.tag_id")
 
 	if params.Title != "" {
 		query.Where("essay.title LIKE ?", fmt.Sprintf("%%%s%%", params.Title))
