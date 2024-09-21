@@ -63,13 +63,15 @@ func (essay EssayRepo) Find(params dto.EssayDTO) (*vo.PaginationVO[[]entity.Essa
 
 	// 根据标题进行模糊查询
 	if params.Title != "" {
-		query.Where("essay.title LIKE ?", fmt.Sprintf("%%%s%%", params.Title))
+		query.Where("essays.title LIKE ?", fmt.Sprintf("%%%s%%", params.Title))
 	}
 
 	// 根据帖子内容进行模糊查询
 	if params.Post != "" {
-		query.Where("essay.post LIKE ?", fmt.Sprintf("%%%s%%", params.Post))
+		query.Where("essays.post LIKE ?", fmt.Sprintf("%%%s%%", params.Post))
 	}
+
+	query.Where("essays.hide = ?", params.Hide)
 
 	// 根据标签进行查询
 	if len(params.Tags) != 0 {
@@ -81,7 +83,7 @@ func (essay EssayRepo) Find(params dto.EssayDTO) (*vo.PaginationVO[[]entity.Essa
 	query.Group("essays.id").Count(&szie)
 
 	// 执行分页查询
-	if result := query.Limit(params.GetLimit()).Offset(params.GetOffset()).Find(&res); result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+	if result := query.Order("essays.updated_at DESC").Limit(params.GetLimit()).Offset(params.GetOffset()).Find(&res); result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, result.Error
 	}
 
