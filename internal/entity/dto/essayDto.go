@@ -2,7 +2,8 @@ package dto
 
 import "time"
 
-type EssayDto struct {
+type EssayDTO struct {
+	PaginationDTO
 	CreatedAt time.Time `form:"createdAt" json:"createdAt,omitempty"`
 	UpdatedAt time.Time `form:"updatedAt" json:"updatedAt,omitempty"`
 	Title     string    `form:"title" json:"title,omitempty"`

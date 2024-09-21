@@ -33,7 +33,7 @@ func NewEssayRouter(essayService service.IEssayService, tagService service.ITagS
 }
 
 func (essay EssayRouter) List(c *gin.Context) {
-	var params dto.EssayDto
+	var params dto.EssayDTO
 	err := c.ShouldBindQuery(&params)
 	if err != nil {
 		c.Error(err)

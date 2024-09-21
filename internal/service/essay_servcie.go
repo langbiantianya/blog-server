@@ -4,6 +4,7 @@ import (
 	"blog-server/internal/conf"
 	"blog-server/internal/entity"
 	"blog-server/internal/entity/dto"
+	"blog-server/internal/entity/vo"
 	"blog-server/internal/generation"
 	"blog-server/internal/repo"
 	"fmt"
@@ -14,7 +15,7 @@ import (
 
 type IEssayService interface {
 	Info(uint) (*entity.Essay, error)
-	List(dto.EssayDto) (*[]entity.Essay, error)
+	List(dto.EssayDTO) (*vo.PaginationVO[[]entity.Essay], error)
 	Add(entity.Essay) error
 	Update(entity.Essay) error
 	Hide(uint) error
@@ -38,7 +39,7 @@ func (essay EssayService) Info(id uint) (*entity.Essay, error) {
 	return essay.essayRepo.Info(id)
 }
 
-func (essay EssayService) List(params dto.EssayDto) (*[]entity.Essay, error) {
+func (essay EssayService) List(params dto.EssayDTO) (*vo.PaginationVO[[]entity.Essay], error) {
 
 	return essay.essayRepo.Find(params)
 }
