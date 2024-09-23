@@ -61,11 +61,6 @@ func (essay EssayRouter) Info(c *gin.Context) {
 		return
 	}
 
-	if res.Post != "" {
-		strb := base64.StdEncoding.EncodeToString([]byte(res.Post))
-		res.Post = string(strb)
-	}
-
 	c.JSON(http.StatusOK, res)
 }
 

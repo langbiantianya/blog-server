@@ -177,8 +177,8 @@ func (essay EssayRepo) Hide(id uint) error {
 	e := &entity.Essay{}
 	e.ID = id
 	e.Hide = true
-	if err := essay.Update(*e); err != nil {
-		return err
+	if result := essay.db.Updates(e); result.Error != nil {
+		return result.Error
 	}
 	return nil
 }
