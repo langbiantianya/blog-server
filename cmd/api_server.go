@@ -34,7 +34,7 @@ func (api ApiRoutes) apiV1(r *gin.Engine) {
 	essay.PUT("/", api.essay.Update)
 	essay.DELETE("/:id", api.essay.Delete)
 	essay.PUT("/hide/:id", api.essay.Hide)
-	essay.PUT("/publish", api.essay.Publish)
+	essay.PUT("/publish/:id", api.essay.Publish)
 	tag := v1.Group("/tag")
 	tag.GET("/list", api.tag.List)
 }

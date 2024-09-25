@@ -17,6 +17,7 @@ type IEssayRepo interface {
 	Update(entity.Essay) error
 	Hide(uint) error
 	Delete(uint) error
+	Publish(uint) error
 }
 
 type EssayRepo struct {
@@ -189,6 +190,16 @@ func (essay EssayRepo) Delete(id uint) error {
 		return err
 	}
 	if result := essay.db.Model(&entity.Essay{}).Delete(e); result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (essay EssayRepo) Publish(id uint) error {
+	e := entity.Essay{
+		Hide: false,
+	}
+	if result := essay.db.Model(&entity.Essay{}).Select("hide").Where("id = ?", id).Updates(e); result.Error != nil {
 		return result.Error
 	}
 	return nil

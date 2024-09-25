@@ -4,7 +4,6 @@ import (
 	"blog-server/internal/entity"
 	"blog-server/internal/entity/dto"
 	"blog-server/internal/service"
-	"blog-server/public/utils"
 	"encoding/base64"
 	"net/http"
 	"strconv"
@@ -143,13 +142,13 @@ func (essay EssayRouter) Delete(c *gin.Context) {
 }
 
 func (essay EssayRouter) Publish(c *gin.Context) {
-	ids := c.QueryArray("ids")
-	uids := utils.Map(ids, func(index int, item string) (uint, error) {
-		uid, err := strconv.ParseUint(item, 10, 32)
-		return uint(uid), err
-	})
-
-	err := essay.essayService.Publish(uids)
+	id := c.Param("id")
+	uid, err := strconv.ParseUint(id, 10, 32)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	err = essay.essayService.Publish(uint(uid))
 	if err != nil {
 		c.Error(err)
 		return
