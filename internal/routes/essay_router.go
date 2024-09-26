@@ -4,7 +4,6 @@ import (
 	"blog-server/internal/entity"
 	"blog-server/internal/entity/dto"
 	"blog-server/internal/service"
-	"encoding/base64"
 	"net/http"
 	"strconv"
 
@@ -70,14 +69,14 @@ func (essay EssayRouter) Add(c *gin.Context) {
 		c.Error(err)
 		return
 	}
-	if params.Post != "" {
-		strb, err := base64.StdEncoding.DecodeString(params.Post)
-		if err != nil {
-			c.Error(err)
-			return
-		}
-		params.Post = string(strb)
-	}
+	// if params.Post != "" {
+	// 	strb, err := base64.StdEncoding.DecodeString(params.Post)
+	// 	if err != nil {
+	// 		c.Error(err)
+	// 		return
+	// 	}
+	// 	params.Post = string(strb)
+	// }
 	err = essay.essayService.Add(params)
 	if err != nil {
 		c.Error(err)
@@ -93,14 +92,14 @@ func (essay EssayRouter) Update(c *gin.Context) {
 		c.Error(err)
 		return
 	}
-	if params.Post != "" {
-		strb, err := base64.StdEncoding.DecodeString(params.Post)
-		if err != nil {
-			c.Error(err)
-			return
-		}
-		params.Post = string(strb)
-	}
+	// if params.Post != "" {
+	// 	strb, err := base64.StdEncoding.DecodeString(params.Post)
+	// 	if err != nil {
+	// 		c.Error(err)
+	// 		return
+	// 	}
+	// 	params.Post = string(strb)
+	// }
 
 	err = essay.essayService.Update(params)
 

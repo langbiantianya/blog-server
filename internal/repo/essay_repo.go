@@ -146,19 +146,24 @@ func (essay EssayRepo) Update(params entity.Essay) error {
 			return res.Error
 		}
 		if len(params.Tags) > 0 {
-			valueArry := []byte("(?),")
 			essayTags := make([]uint, 0)
-			sql := []byte("INSERT INTO essay_tags (tag_id,essay_id)  VALUES ")
+			sqlstr := "INSERT INTO essay_tags (tag_id,essay_id)  VALUES (?)"
 
 			for _, tag := range params.Tags {
-				sql = append(sql, valueArry...)
 				essayTags = append(essayTags, tag.ID, params.ID)
 			}
-			sqlstr := string(sql)
-			sqlstr = sqlstr[:len(sqlstr)-1]
-			if res := tx.Exec(sqlstr, essayTags); res.Error != nil {
-				return res.Error
+			// 遍历原始数组，两个两个地处理元素
+			for i := 0; i < len(essayTags); i += 2 {
+				// 确保我们不会越界
+				if i+1 < len(essayTags) {
+					// 取出两个元素并拼接它们
+					combined := []uint{essayTags[i], essayTags[i+1]}
+					if res := tx.Exec(sqlstr, combined); res.Error != nil {
+						return res.Error
+					}
+				}
 			}
+
 		}
 
 		if res := tx.Model(&entity.Essay{}).Where("id", params.ID).Updates(params); res.Error != nil {
