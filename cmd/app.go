@@ -20,7 +20,7 @@ func NewApp(apiRoutes *ApiRoutes) App {
 
 func (a App) StartServer() {
 	config := conf.GetConfig()
-	go StartStaticServer(config.StaticPath, config.StaticPort)
+	go StartStaticServer(config.StaticOutPath, config.StaticPort)
 	go StartApiServer(config.ApiPort, a.apiRoutes)
 }
 

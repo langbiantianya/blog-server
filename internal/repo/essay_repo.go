@@ -82,9 +82,11 @@ func (essay EssayRepo) Find(params dto.EssayDTO) (*vo.PaginationVO[[]entity.Essa
 	// 计算总记录数
 	var szie int64
 	query.Group("essays.id").Count(&szie)
-
+	if params.Limit != 0 {
+		query = query.Limit(params.GetLimit())
+	}
 	// 执行分页查询
-	if result := query.Order("essays.updated_at DESC").Limit(params.GetLimit()).Offset(params.GetOffset()).Find(&res); result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+	if result := query.Order("essays.updated_at DESC").Offset(params.GetOffset()).Find(&res); result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, result.Error
 	}
 

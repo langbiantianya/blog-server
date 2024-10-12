@@ -3,12 +3,17 @@ module blog-server
 go 1.23.0
 
 require (
+	github.com/88250/lute v1.7.6
 	github.com/gin-gonic/gin v1.10.0
 	github.com/urfave/cli/v2 v2.27.4
-	github.com/yuin/goldmark v1.7.4
 )
 
-require github.com/mattn/go-sqlite3 v1.14.23 // indirect
+require (
+	github.com/alecthomas/chroma v0.10.0 // indirect
+	github.com/dlclark/regexp2 v1.11.4 // indirect
+	github.com/gopherjs/gopherjs v1.17.2 // indirect
+	github.com/mattn/go-sqlite3 v1.14.23 // indirect
+)
 
 require (
 	github.com/bytedance/sonic v1.12.2 // indirect
@@ -40,7 +45,7 @@ require (
 	golang.org/x/crypto v0.27.0 // indirect
 	golang.org/x/net v0.29.0 // indirect
 	golang.org/x/sys v0.25.0 // indirect
-	golang.org/x/text v0.18.0 // indirect
+	golang.org/x/text v0.19.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/sqlite v1.5.6

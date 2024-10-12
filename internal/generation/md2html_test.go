@@ -5,9 +5,6 @@ import (
 )
 
 func TestMd2html(t *testing.T) {
-	md, err := Md2html([]byte("# Hello, Goldmark!\n\nThis *is* a test document."))
-	if err != nil {
-		t.Error(err)
-	}
+	md := Md2html("test title", "# Hello, Goldmark!\n\nThis *is* a test document.")
 	t.Log(string(md))
 }

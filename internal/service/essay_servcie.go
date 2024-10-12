@@ -1,10 +1,16 @@
 package service
 
 import (
+	"blog-server/internal/conf"
 	"blog-server/internal/entity"
 	"blog-server/internal/entity/dto"
 	"blog-server/internal/entity/vo"
+	"blog-server/internal/generation"
 	"blog-server/internal/repo"
+	"blog-server/public/utils"
+	"errors"
+	"fmt"
+	"os"
 )
 
 type IEssayService interface {
@@ -57,42 +63,69 @@ func (essay EssayService) Delete(id uint) error {
 
 // TODO: 考虑异步处理
 func (essay EssayService) Publish(id uint) error {
-	// TODO 不使用这个依赖换一个
-	// for _, id := range ids {
-	// // 获取文章数据转为html
-	// e, err := essay.Info(id)
-	// if err != nil {
-	// 	return err
-	// }
-	// html, err := generation.Md2html([]byte(e.Post))
-	// if err != nil {
-	// 	return err
-	// }
-	// // 写入文件系统
-	// filePath := path.Clean(fmt.Sprintf("%s/essay/", conf.GetConfig().StaticPath))
-	// err = os.MkdirAll(filePath, 0755)
-	// if err != nil {
-	// 	return err
-	// }
-	// filePath = path.Clean(fmt.Sprintf("%s/%s.html", filePath, e.Title))
-	// file, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY, 0644)
-	// if err != nil {
-	// 	return err
-	// }
-	// defer file.Close()
+	// 生成转换html文本
+	res, err := essay.essayRepo.Info(id)
+	if err != nil {
+		return err
+	}
+	var md2htmlStr string
+	if res != nil {
+		md2htmlStr = generation.Md2html(res.Title, res.Post)
+	} else {
+		return errors.New("没有找到文章")
+	}
 
-	// bytesWritten, err := file.Write(html)
-	// if err != nil {
-	// 	return err
-	// }
-	// log.Printf("Successfully wrote %d bytes to %s\n", bytesWritten, filePath)
-	// }
+	// 获取模板
+	staticPath := conf.GetConfig().StaticPath
+	defaultTemplatePath := staticPath + "/template/default.html"
+	customizedTeplatePath := staticPath + "/template/index.html"
+	_, customizedErr := os.Stat(customizedTeplatePath)
+	_, defaultErr := os.Stat(defaultTemplatePath)
 
-	// 编制路由
+	var templatePath string
+
+	if customizedErr == nil {
+		templatePath = customizedTeplatePath
+	} else if defaultErr == nil {
+		templatePath = defaultTemplatePath
+	} else {
+		return errors.Join(defaultErr, customizedErr)
+	}
+
+	// 生成页面文件
+	htmlStr, err := generation.ApplayTemplate(res.Title, templatePath, md2htmlStr)
+
+	if err != nil {
+		return nil
+	}
+	// 写入文件
+	err = generation.WireStr2File(fmt.Sprintf("%s/post/%d/index.html", conf.GetConfig().StaticOutPath, res.ID), htmlStr)
+	if err != nil {
+		return err
+	}
+	// 编制tags
+	essays, err := essay.essayRepo.Find(
+		dto.EssayDTO{
+			Hide: false,
+		})
+	if err != nil {
+		return err
+	}
+	// 取出已经发布的tag去重
+	tags := utils.Flatten(
+		utils.Map(essays.Data, func(index int, item entity.Essay) ([]string, error) {
+			return utils.Map(item.Tags, func(_ int, tag entity.Tag) (string, error) {
+				return tag.Name, nil
+			}), err
+		}))
+	tags = utils.DistinctBy(tags, func(item string) any {
+		return item
+	})
+	
 	// 生成索引
 	// TODO
 
-	err := essay.essayRepo.Publish(id)
+	err = essay.essayRepo.Publish(id)
 	if err != nil {
 		return err
 	}

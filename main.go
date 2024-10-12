@@ -51,10 +51,17 @@ func main() {
 				Required:    false,
 			},
 			&cli.PathFlag{
-				Name:        "path",
-				DefaultText: "./www/html",
-				Value:       "./www/html",
-				Usage:       "静态页面文件夹",
+				Name:        "staticPath",
+				DefaultText: "./static",
+				Value:       "./static",
+				Usage:       "存放静态资源的路径",
+				Required:    false,
+			},
+			&cli.PathFlag{
+				Name:        "outPath",
+				DefaultText: "./www/blog",
+				Value:       "./www/blog",
+				Usage:       "生成的静态页面根路径",
 				Required:    false,
 			},
 			&cli.PathFlag{

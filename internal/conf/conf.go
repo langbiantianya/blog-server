@@ -3,9 +3,10 @@ package conf
 import "github.com/urfave/cli/v2"
 
 type Config struct {
-	StaticPath string
-	ApiPort    int
-	StaticPort int
+	StaticPath    string
+	ApiPort       int
+	StaticPort    int
+	StaticOutPath string
 }
 
 var conf Config
@@ -17,8 +18,9 @@ func GetConfig() Config {
 func InitConfig(ctx *cli.Context) {
 	port := ctx.IntSlice("port")
 	conf = Config{
-		StaticPath: ctx.String("path"),
-		ApiPort:    port[1],
-		StaticPort: port[0],
+		StaticPath:    ctx.String("staticPath"),
+		StaticOutPath: ctx.String("outPath"),
+		ApiPort:       port[1],
+		StaticPort:    port[0],
 	}
 }
