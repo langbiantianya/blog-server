@@ -53,6 +53,13 @@ func (essay EssayService) Update(params entity.Essay) error {
 }
 
 func (essay EssayService) Hide(id uint) error {
+	// 删除已经生成的文件
+
+	err := os.RemoveAll(fmt.Sprintf("%s/post/%d", conf.GetConfig().StaticOutPath, id))
+	if err != nil {
+		return err
+	}
+
 	return essay.essayRepo.Hide(id)
 }
 
