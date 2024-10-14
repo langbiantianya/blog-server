@@ -106,17 +106,17 @@ func (essay EssayService) Publish(id uint) error {
 
 	// 获取模板
 	staticPath := conf.GetConfig().StaticPath
-	defaultTemplatePath := staticPath + "/template/default.html"
-	customizedTeplatePath := staticPath + "/template/index.html"
-	_, customizedErr := os.Stat(customizedTeplatePath)
-	_, defaultErr := os.Stat(defaultTemplatePath)
+	defaultPostTemplatePath := staticPath + "/template/defaultPost.html"
+	customizedPostTemplatePath := staticPath + "/template/index.html"
+	_, customizedErr := os.Stat(customizedPostTemplatePath)
+	_, defaultErr := os.Stat(defaultPostTemplatePath)
 
-	var templatePath string
+	var postTemplatePath string
 
 	if customizedErr == nil {
-		templatePath = customizedTeplatePath
+		postTemplatePath = customizedPostTemplatePath
 	} else if defaultErr == nil {
-		templatePath = defaultTemplatePath
+		postTemplatePath = defaultPostTemplatePath
 	} else {
 		return errors.Join(defaultErr, customizedErr)
 	}
@@ -141,7 +141,7 @@ func (essay EssayService) Publish(id uint) error {
 	}
 
 	// 生成页面文件
-	htmlStr, err := generation.ApplayTemplate(templatePath, tagTemplatePath, res.Title, tag, md2htmlStr)
+	htmlStr, err := generation.ApplayTemplate(postTemplatePath, tagTemplatePath, res.Title, tag, md2htmlStr)
 
 	if err != nil {
 		return nil

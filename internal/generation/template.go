@@ -7,16 +7,16 @@ import (
 	"strings"
 )
 
-func ApplayTemplate(templatePath, tagTemplatePath, title string, tag []string, postHtmlStr string) (string, error) {
+func ApplayTemplate(postTemplatePath, tagTemplatePath, title string, tag []string, postHtmlStr string) (string, error) {
 	// 加载模板
-	templateFile, err := os.Open(templatePath)
+	postTemplateFile, err := os.Open(postTemplatePath)
 
 	if err != nil {
 		return "", err
 	}
-	defer templateFile.Close()
+	defer postTemplateFile.Close()
 
-	templateByteArray, err := io.ReadAll(templateFile)
+	postTemplateByteArray, err := io.ReadAll(postTemplateFile)
 	if err != nil {
 		return "", err
 	}
@@ -43,7 +43,7 @@ func ApplayTemplate(templatePath, tagTemplatePath, title string, tag []string, p
 	})
 
 	// 替换title
-	htmlStr := strings.Replace(string(templateByteArray), "${{title}}", title, 1)
+	htmlStr := strings.Replace(string(postTemplateByteArray), "${{title}}", title, 1)
 
 	htmlStr = strings.Replace(htmlStr, "${{tag}}", tagStr, 1)
 
