@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func ApplayTemplate(title, templatePath, postHtmlStr string) (string, error) {
+func ApplayTemplate(templatePath, title string, tag []string, postHtmlStr string) (string, error) {
 	// 加载模板
 	file, err := os.Open(templatePath)
 

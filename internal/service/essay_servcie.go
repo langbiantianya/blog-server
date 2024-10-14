@@ -45,7 +45,6 @@ func (essay EssayService) List(params dto.EssayDTO) (*vo.PaginationVO[[]entity.E
 }
 
 func (essay EssayService) Add(params entity.Essay) error {
-	// TODO 保留一份到文件系统中
 	return essay.essayRepo.Add(params)
 }
 
@@ -91,39 +90,23 @@ func (essay EssayService) Publish(id uint) error {
 	} else {
 		return errors.Join(defaultErr, customizedErr)
 	}
+	// 取出tag
+	tag := utils.Map(res.Tags, func(index int, item entity.Tag) (string, error) {
+		return item.Name, nil
+	})
 
 	// 生成页面文件
-	htmlStr, err := generation.ApplayTemplate(res.Title, templatePath, md2htmlStr)
+	htmlStr, err := generation.ApplayTemplate(templatePath, res.Title, tag, md2htmlStr)
 
 	if err != nil {
 		return nil
 	}
+
 	// 写入文件
 	err = generation.WireStr2File(fmt.Sprintf("%s/post/%d/index.html", conf.GetConfig().StaticOutPath, res.ID), htmlStr)
 	if err != nil {
 		return err
 	}
-	// 编制tags
-	essays, err := essay.essayRepo.Find(
-		dto.EssayDTO{
-			Hide: false,
-		})
-	if err != nil {
-		return err
-	}
-	// 取出已经发布的tag去重
-	tags := utils.Flatten(
-		utils.Map(essays.Data, func(index int, item entity.Essay) ([]string, error) {
-			return utils.Map(item.Tags, func(_ int, tag entity.Tag) (string, error) {
-				return tag.Name, nil
-			}), err
-		}))
-	tags = utils.DistinctBy(tags, func(item string) any {
-		return item
-	})
-	
-	// 生成索引
-	// TODO
 
 	err = essay.essayRepo.Publish(id)
 	if err != nil {
