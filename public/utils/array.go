@@ -41,3 +41,12 @@ func DistinctBy[T any](list []T, filter func(item T) any) []T {
 	}
 	return uniqueArr
 }
+
+func Sum[T any](list []T, sumBy func(sum T, item T) T) T {
+	var sum *T = new(T)
+	for _, v := range list {
+		tmp := sumBy(*sum, v)
+		sum = &tmp
+	}
+	return *sum
+}

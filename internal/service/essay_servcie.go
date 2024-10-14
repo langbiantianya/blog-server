@@ -60,6 +60,29 @@ func (essay EssayService) Hide(id uint) error {
 		return err
 	}
 
+	// 重新生成索引
+	essaysT, err := essay.essayRepo.Find(dto.EssayDTO{
+		Hide: false,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	essays := utils.Filter(essaysT.Data, func(essayT entity.Essay) bool {
+		return essayT.ID != id
+	})
+
+	// 生成索引
+	indexJson, err := generation.Index(essays)
+	if err != nil {
+		return err
+	}
+	// 写入文件
+	err = generation.WireStr2File(fmt.Sprintf("%s/index.json", conf.GetConfig().StaticOutPath), indexJson)
+	if err != nil {
+		return err
+	}
 	return essay.essayRepo.Hide(id)
 }
 
@@ -102,8 +125,23 @@ func (essay EssayService) Publish(id uint) error {
 		return item.Name, nil
 	})
 
+	var tagTemplatePath string
+	// 获取模板
+	defaultTagTemplatePath := staticPath + "/template/defaultTag.html"
+	customizedTagTemplatePath := staticPath + "/template/Tag.html"
+	_, customizedTagErr := os.Stat(customizedTagTemplatePath)
+	_, defaultTagErr := os.Stat(defaultTagTemplatePath)
+
+	if customizedTagErr == nil {
+		tagTemplatePath = customizedTagTemplatePath
+	} else if defaultTagErr == nil {
+		tagTemplatePath = defaultTagTemplatePath
+	} else {
+		return errors.Join(defaultErr, customizedErr)
+	}
+
 	// 生成页面文件
-	htmlStr, err := generation.ApplayTemplate(templatePath, res.Title, tag, md2htmlStr)
+	htmlStr, err := generation.ApplayTemplate(templatePath, tagTemplatePath, res.Title, tag, md2htmlStr)
 
 	if err != nil {
 		return nil
@@ -115,6 +153,26 @@ func (essay EssayService) Publish(id uint) error {
 		return err
 	}
 
+	// 生成索引文件
+	essaysT, err := essay.essayRepo.Find(dto.EssayDTO{
+		Hide: false,
+	})
+	if err != nil {
+		return err
+	}
+
+	essays := append(essaysT.Data, *res)
+
+	indexJson, err := generation.Index(essays)
+
+	if err != nil {
+		return err
+	}
+	// 写入文件
+	err = generation.WireStr2File(fmt.Sprintf("%s/index.json", conf.GetConfig().StaticOutPath), indexJson)
+	if err != nil {
+		return err
+	}
 	err = essay.essayRepo.Publish(id)
 	if err != nil {
 		return err
