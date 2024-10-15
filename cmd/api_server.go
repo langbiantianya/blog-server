@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"blog-server/internal/middleware"
 	"blog-server/internal/routes"
 	"fmt"
 
@@ -14,6 +15,7 @@ type ApiRoutes struct {
 
 func StartApiServer(port int, apiRoutes *ApiRoutes) {
 	r := gin.Default()
+	r.Use(middleware.PanicRecovery, middleware.ErrorHandler)
 	apiRoutes.apiV1(r)
 	r.Run(fmt.Sprintf(":%d", port))
 }
