@@ -17,17 +17,17 @@
             .then(data => postIndex = data)
             .catch(err => console.error(err))
 
-        document.getElementById("essayPage").innerHTML = `
+        // document.getElementById("essayPage").innerHTML = `
 
-        `.trim()
+        // `.trim()
     </script>
     <div id="essayPage" class="container mx-auto p-8">
         <div class="page-table container mx-auto space-y-4">
             ${{essayPage}}
         </div>
         <div class="page-bar flex justify-end space-x-4">
-            <div id="page-size">
-                <select id="page-size-select" name="page-size-select">
+            <div id="page-size-select">
+                <select id="page-size" name="page-size" title="page-size">
                     <option value="5" selected>5</option>
                     <option value="10">10</option>
                     <option value="15">15</option>
@@ -35,7 +35,7 @@
                 <span>条/页</span>
             </div>
             <button>上一页</button>
-            <select id="page-current" name="page-current">
+            <select id="page-current" name="page-current"  title="page-current">
                 <option value="1" selected>1</option>
             </select>
             <button>下一页</button>
