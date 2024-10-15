@@ -4,15 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>欢迎</title>
 </head>
 
 <body>
-    <div id="tags">${{tags}}</div>
+
+    <script>
+        let current = 1
+        fetch("/index.json")
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(err => console.error(err))
+    </script>
 
     <div id="essayPage">
         ${{essayPage}}
     </div>
+
 </body>
 
 </html>

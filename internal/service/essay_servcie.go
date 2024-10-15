@@ -83,6 +83,33 @@ func (essay EssayService) Hide(id uint) error {
 	if err != nil {
 		return err
 	}
+
+	// 生成主页
+	staticPath := conf.GetConfig().StaticPath
+	homeTemplatePath, err := utils.GetFilePath(staticPath+"/template/home.html", staticPath+"/template/defaultHome.html")
+	if err != nil {
+		return err
+	}
+
+	pagsItemTemplatePath, err := utils.GetFilePath(staticPath+"/template/pageItem.html", staticPath+"/template/defaultPagsItem.html")
+	if err != nil {
+		return err
+	}
+
+	tagTemplatePath, err := utils.GetFilePath(staticPath+"/template/tag.html", staticPath+"/template/defaultTag.html")
+	if err != nil {
+		return err
+	}
+
+	homeHtml, err := generation.GenerationHomePage(homeTemplatePath, pagsItemTemplatePath, tagTemplatePath, essays)
+	if err != nil {
+		return err
+	}
+	// 写入文件
+	err = generation.WireStr2File(fmt.Sprintf("%s/index.html", conf.GetConfig().StaticOutPath), homeHtml)
+	if err != nil {
+		return err
+	}
 	return essay.essayRepo.Hide(id)
 }
 
@@ -106,38 +133,20 @@ func (essay EssayService) Publish(id uint) error {
 
 	// 获取模板
 	staticPath := conf.GetConfig().StaticPath
-	defaultPostTemplatePath := staticPath + "/template/defaultPost.html"
-	customizedPostTemplatePath := staticPath + "/template/index.html"
-	_, customizedErr := os.Stat(customizedPostTemplatePath)
-	_, defaultErr := os.Stat(defaultPostTemplatePath)
-
-	var postTemplatePath string
-
-	if customizedErr == nil {
-		postTemplatePath = customizedPostTemplatePath
-	} else if defaultErr == nil {
-		postTemplatePath = defaultPostTemplatePath
-	} else {
-		return errors.Join(defaultErr, customizedErr)
+	postTemplatePath, err := utils.GetFilePath(staticPath+"/template/post.html", staticPath+"/template/defaultPost.html")
+	if err != nil {
+		return err
 	}
 	// 取出tag
 	tag := utils.Map(res.Tags, func(index int, item entity.Tag) (string, error) {
 		return item.Name, nil
 	})
 
-	var tagTemplatePath string
 	// 获取模板
-	defaultTagTemplatePath := staticPath + "/template/defaultTag.html"
-	customizedTagTemplatePath := staticPath + "/template/Tag.html"
-	_, customizedTagErr := os.Stat(customizedTagTemplatePath)
-	_, defaultTagErr := os.Stat(defaultTagTemplatePath)
 
-	if customizedTagErr == nil {
-		tagTemplatePath = customizedTagTemplatePath
-	} else if defaultTagErr == nil {
-		tagTemplatePath = defaultTagTemplatePath
-	} else {
-		return errors.Join(defaultErr, customizedErr)
+	tagTemplatePath, err := utils.GetFilePath(staticPath+"/template/tag.html", staticPath+"/template/defaultTag.html")
+	if err != nil {
+		return err
 	}
 
 	// 生成页面文件
@@ -173,6 +182,27 @@ func (essay EssayService) Publish(id uint) error {
 	if err != nil {
 		return err
 	}
+
+	// 生成主页
+	homeTemplatePath, err := utils.GetFilePath(staticPath+"/template/home.html", staticPath+"/template/defaultHome.html")
+	if err != nil {
+		return err
+	}
+
+	pagsItemTemplatePath, err := utils.GetFilePath(staticPath+"/template/pageItem.html", staticPath+"/template/defaultPagsItem.html")
+	if err != nil {
+		return err
+	}
+	homeHtml, err := generation.GenerationHomePage(homeTemplatePath, pagsItemTemplatePath, tagTemplatePath, essays)
+	if err != nil {
+		return err
+	}
+	// 写入文件
+	err = generation.WireStr2File(fmt.Sprintf("%s/index.html", conf.GetConfig().StaticOutPath), homeHtml)
+	if err != nil {
+		return err
+	}
+	// 写入文件
 	err = essay.essayRepo.Publish(id)
 	if err != nil {
 		return err
