@@ -16,7 +16,7 @@ func Index(essays []entity.Essay) (string, error) {
 			// 提取出 id
 			Id:    essay.ID,
 			Title: essay.Title,
-			Post:  essay.Post,
+			Post:  Md2html(essay.Title, essay.Post),
 			Tags:  utils.Map(essay.Tags, func(index int, tag entity.Tag) (string, error) { return tag.Name, nil }),
 		}, nil
 	})

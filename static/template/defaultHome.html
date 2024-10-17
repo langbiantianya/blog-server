@@ -12,37 +12,108 @@
     <script>
         let current = 1
         let postIndex = []
-        fetch("/index.json")
-            .then(response => response.json())
-            .then(data => postIndex = data)
-            .catch(err => console.error(err))
+        let pageSize = 5
+        function renderPage() {
+            let renderArray = postIndex.slice(pageSize * ((current - 1) < 0 ? 0 : current - 1), pageSize * current)
+            let tableHtml = renderArray.map((value, index) => {
+                return `<li class="page-item divide-y divide-dashed" id="page-item-${value.id}">
+                        <div class="page-item-tag flex space-x-4">
+                            ${value.tags.map((tag) => {
+                    return `<span class="tag-item text-xs">${tag}</span>`
+                }).join("")}
+                        </div>
+                        <div>
+                            <a class="page-item-href" href="/post/${value.id}">
+                                <h1 class="page-item-title text-xl font-bold">${value.title}</h1>
+                                <hr/>
+                                <div class="page-item-post max-h-20 min-h-5 truncate">${value.post}</div>
+                            </a>
+                        </div>
+                    </li>`.trim()
+            }).join("").trim()
+            document.getElementById("essay-page-table").innerHTML = tableHtml
+        }
+        function renderPageCurrentSelect() {
+            let totalPage = Math.ceil(postIndex.length / pageSize)
+            let pageSelect = []
+            for (let i = 1; i <= totalPage; i++) {
+                pageSelect.push(`<option value="${i}" ${i == current ? "selected" : ""}>${i}</option>`.trim())
+            }
+            document.getElementById("page-current").innerHTML = `${pageSelect.join("").trim()}`.trim()
+        }
 
-        // document.getElementById("essayPage").innerHTML = `
+        window.onload = () => {
 
-        // `.trim()
+            fetch("/index.json")
+                .then(response => response.json())
+                .then(data => {
+                    postIndex = data
+                    renderPageCurrentSelect()
+                })
+                .catch(err => console.error(err))
+
+            document.getElementById("page-size").addEventListener("change", function (event) {
+                pageSize = parseInt(this.value)
+                if (current > Math.ceil(postIndex.length / pageSize)) {
+                    current = Math.ceil(postIndex.length / pageSize)
+                }
+                renderPage()
+                renderPageCurrentSelect()
+            })
+
+            document.getElementById("page-current").addEventListener("change", function (event) {
+                current = parseInt(this.value)
+                renderPage()
+                renderPageCurrentSelect()
+            })
+
+            document.getElementById("page-current-previous").addEventListener("click", function (event) {
+                current -= 1
+                if (current < 1) {
+                    current = 1
+                } else {
+                    renderPage()
+                    renderPageCurrentSelect()
+                }
+            })
+
+            document.getElementById("page-current-next").addEventListener("click", function (event) {
+                current += 1
+                if (current > Math.ceil(postIndex.length / pageSize)) {
+                    current = Math.ceil(postIndex.length / pageSize)
+                } else {
+                    renderPage()
+                    renderPageCurrentSelect()
+                }
+            })
+
+
+
+        }
+
     </script>
-    <div id="essayPage" class="container mx-auto p-8">
-        <div class="page-table container mx-auto space-y-4">
+    <div id="essay-page" class="container mx-auto p-8 space-y-2">
+        <ul id="essay-page-table" class="page-table container mx-auto space-y-4 list-outside list-none">
             ${{essayPage}}
-        </div>
+        </ul>
         <div class="page-bar flex justify-end space-x-4">
             <div id="page-size-select">
-                <select id="page-size" name="page-size" title="page-size">
+                <select id="page-size" name="page-size" title="page-size" class="rounded hover:ring-1">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
                     <option value="5" selected>5</option>
                     <option value="10">10</option>
                     <option value="15">15</option>
                 </select>
                 <span>条/页</span>
             </div>
-            <button>上一页</button>
-            <select id="page-current" name="page-current"  title="page-current">
+            <button id="page-current-previous" class="border rounded min-w-16 hover:ring-1">上一页</button>
+            <select id="page-current" name="page-current" title="page-current" class="rounded hover:ring-1">
                 <option value="1" selected>1</option>
             </select>
-            <button>下一页</button>
+            <button id="page-current-next" class="border rounded min-w-16 hover:ring-1">下一页</button>
         </div>
     </div>
-
-
 </body>
 
 </html>
