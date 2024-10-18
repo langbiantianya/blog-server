@@ -7,9 +7,9 @@
 ## 替换关键字
 
 1. ${{tag}}当前文章的标签
-3. ${{title}}页面标题名字
-4. ${{essay}}文章
-5. ${{essayPage}}文章分页列表
+2. ${{title}}页面标题名字
+3. ${{essay}}文章
+4. ${{essayPage}}文章分页列表
 
 ## 计划
 
@@ -46,6 +46,7 @@
 
 ### 前端框架
 
-- 基础 svelte.js
-- 搜索 fusejs
-- md编辑器 vditor
+- [svelte.js](https://svelte.dev/)
+- [fusejs](https://www.fusejs.io/)
+- [vditor](https://github.com/Vanessa219/vditor)
+- [fluent-ui](https://learn.microsoft.com/zh-cn/fluent-ui/web-components/)

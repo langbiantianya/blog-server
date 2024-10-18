@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
+    <script type="module">
+        import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.mjs'
+
+        let postIndex = []
+        let fuse = {}
+        let searchResult = []
+        let searchPattern = ""
+        const fuseOptions = {
+            keys: [
+                "title",
+                "post",
+                "tags"
+            ]
+        }
+        function renderPage() {
+            document.getElementById("essay-page-table").innerHTML = ((!searchPattern || searchPattern === "") ? postIndex : searchResult).map((value, index) => {
+                return `<li id="page-item-${value.id}">
+                                <fluent-card class="transition delay-150 duration-300 ease-in divide-y divide-dashed max-h-32 min-h-10 truncate rounded hover:transition-all hover:shadow-xl">
+                                    <div class="page-item-tag flex space-x-4">${value.tags.map((tag) => {
+                    return `<fluent-badge appearance="accent" class="tag-item text-xs p-1">${tag}</fluent-badge>`
+                }).join("")}
+                                     </div>
+                                     <div>
+                                         <a class="page-item-href" href="/post/${value.id}">
+                                             <h1 class="page-item-title text-xl font-bold">${value.title}</h1>
+                                             <hr/>
+                                             <div class="page-item-post max-h-20 min-h-5 truncate">${value.post}</div>
+                                         </a>
+                                     </div>
+                                </fluent-card>
+                            </li>`.trim()
+            }).join("").trim()
+        }
+        window.onload = () => {
+            fetch("/index.json")
+                .then(response => response.json())
+                .then(data => {
+                    postIndex = data
+                    fuse = new Fuse(postIndex, fuseOptions)
+                    renderPage()
+                })
+                .catch(err => console.error(err))
+
+
+            document.querySelector("#search-filled").addEventListener("change", (event) => {
+                searchPattern = event.target.currentValue
+                searchResult = fuse.search(searchPattern).map((value, index) => { return value.item })
+                renderPage()
+            })
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container mx-auto p-8 space-y-4">
+        <div class="mx-auto">
+            <fluent-search id="search-filled" appearance="filled" placeholder="关键字"></fluent-search>
+        </div>
+        <ul id="essay-page-table" class="space-y-2">
+
+        </ul>
+    </div>
+
+</body>
+
+</html>

@@ -4,32 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <title>欢迎</title>
 </head>
 
 <body>
-    <script>
+    <script type="module">
         let current = 1
         let postIndex = []
         let pageSize = 5
         function renderPage() {
             let renderArray = postIndex.slice(pageSize * ((current - 1) < 0 ? 0 : current - 1), pageSize * current)
             let tableHtml = renderArray.map((value, index) => {
-                return `<li class="page-item divide-y divide-dashed" id="page-item-${value.id}">
-                        <div class="page-item-tag flex space-x-4">
-                            ${value.tags.map((tag) => {
-                    return `<span class="tag-item text-xs">${tag}</span>`
+                return `<li id="page-item-${value.id}">
+                                <fluent-card class="transition delay-150 duration-300 ease-in divide-y divide-dashed max-h-32 min-h-10 truncate rounded hover:transition-all hover:shadow-xl">
+                                    <div class="page-item-tag flex space-x-4">${value.tags.map((tag) => {
+                    return `<fluent-badge appearance="accent" class="tag-item text-xs p-1">${tag}</fluent-badge>`
                 }).join("")}
-                        </div>
-                        <div>
-                            <a class="page-item-href" href="/post/${value.id}">
-                                <h1 class="page-item-title text-xl font-bold">${value.title}</h1>
-                                <hr/>
-                                <div class="page-item-post max-h-20 min-h-5 truncate">${value.post}</div>
-                            </a>
-                        </div>
-                    </li>`.trim()
+                                     </div>
+                                     <div>
+                                         <a class="page-item-href" href="/post/${value.id}">
+                                             <h1 class="page-item-title text-xl font-bold">${value.title}</h1>
+                                             <hr/>
+                                             <div class="page-item-post max-h-20 min-h-5 truncate">${value.post}</div>
+                                         </a>
+                                     </div>
+                                </fluent-card>
+                            </li>`.trim()
             }).join("").trim()
             document.getElementById("essay-page-table").innerHTML = tableHtml
         }
@@ -37,9 +39,12 @@
             let totalPage = Math.ceil(postIndex.length / pageSize)
             let pageSelect = []
             for (let i = 1; i <= totalPage; i++) {
-                pageSelect.push(`<option value="${i}" ${i == current ? "selected" : ""}>${i}</option>`.trim())
+                pageSelect.push(`<fluent-option value="${i}" ${i == current ? "selected" : ""}>${i}</fluent-option>`.trim())
             }
+
             document.getElementById("page-current").innerHTML = `${pageSelect.join("").trim()}`.trim()
+
+            document.getElementById("page-current").currentValue = current
         }
 
         window.onload = () => {
@@ -62,7 +67,7 @@
             })
 
             document.getElementById("page-current").addEventListener("change", function (event) {
-                current = parseInt(this.value)
+                current = parseInt(this.currentValue)
                 renderPage()
                 renderPageCurrentSelect()
             })
@@ -98,20 +103,20 @@
         </ul>
         <div class="page-bar flex justify-end space-x-4">
             <div id="page-size-select">
-                <select id="page-size" name="page-size" title="page-size" class="transition delay-150 duration-300 ease-in-out rounded hover:ring-1">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="5" selected>5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                </select>
-                <span>条/页</span>
+                <fluent-select id="page-size" name="page-size" title="page-size" class="max-w-16 min-w-12 outline-0">
+                    <fluent-option value="1">1</fluent-option>
+                    <fluent-option value="2">2</fluent-option>
+                    <fluent-option value="5" selected>5</fluent-option>
+                    <fluent-option value="10">10</fluent-option>
+                    <fluent-option value="15">15</fluent-option>
+                </fluent-select>
+                <span class="leading-8 h-8">条/页</span>
             </div>
-            <button id="page-current-previous" class="transition delay-150 duration-300 ease-in-out border rounded min-w-16 hover:ring-1">上一页</button>
-            <select id="page-current" name="page-current" title="page-current" class="transition delay-150 duration-300 ease-in-out rounded hover:ring-1">
-                <option value="1" selected>1</option>
-            </select>
-            <button id="page-current-next" class="transition delay-150 duration-300 ease-in-out border rounded min-w-16 hover:ring-1">下一页</button>
+            <fluent-button id="page-current-previous" appearance="accent">上一页</fluent-button>
+            <fluent-select id="page-current" title="page-current" class="max-w-16 min-w-12 outline-0">
+                <fluent-option value="1">1</fluent-option>
+            </fluent-select>
+            <fluent-button id="page-current-next" appearance="accent">下一页</fluent-button>
         </div>
     </div>
 </body>
