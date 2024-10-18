@@ -1,12 +1,21 @@
-<li class="page-item divide-y divide-dashed" id="page-item-${{id}}">
+<li class="page-item 
+    transition delay-300 duration-300 ease-in
+    divide-y 
+    divide-dashed 
+    max-h-32 
+    min-h-10 
+    truncate 
+    rounded
+    hover:transition-all
+    hover:shadow-xl" id="page-item-${{id}}">
     <div class="page-item-tag flex space-x-4">
         ${{tag}}
     </div>
     <div>
-        <a class="page-item-href" href="/post/${{id}}">
+        <a class="page-item-href cursor-pointer" href="/post/${{id}}">
             <h1 class="page-item-title text-xl font-bold">${{title}}</h1>
             <hr />
-            <div class="page-item-post max-h-20 min-h-5 truncate">${{post}}</div>
+            <div class="page-item-post">${{post}}</div>
         </a>
     </div>
 </li>

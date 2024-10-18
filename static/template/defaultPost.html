@@ -9,12 +9,17 @@
 </head>
 
 <body>
-    <div id="tag">
-        ${{tag}}
-    </div>
-
-    <div id="essay">
-        ${{essay}}
+    <div class="container mx-auto p-8 space-y-2 divide-y divide-dashed">
+        <div id="tag" class="flex space-x-4">
+            ${{tag}}
+        </div>
+        <div id="post" class="">
+            <h1 class="text-xl font-bold">${{title}}</h1>
+            <hr />
+            <div id="post-content">
+                ${{post}}
+            </div>
+        </div>
     </div>
 </body>
 

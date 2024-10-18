@@ -50,7 +50,7 @@ func ApplayTemplate(postTemplatePath, tagTemplatePath, title string, tag []strin
 	htmlStr = strings.ReplaceAll(htmlStr, "${{tag}}", tagStr)
 
 	// essay
-	htmlStr = strings.ReplaceAll(htmlStr, "${{essay}}", postHtmlStr)
+	htmlStr = strings.ReplaceAll(htmlStr, "${{post}}", postHtmlStr)
 	return htmlStr, nil
 }
 

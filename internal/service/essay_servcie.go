@@ -170,7 +170,9 @@ func (essay EssayService) Publish(id uint) error {
 		return err
 	}
 
-	essays := append(essaysT.Data, *res)
+	essays := make([]entity.Essay, len(essaysT.Data)+1)
+	essays[0] = *res
+	copy(essays[1:], essaysT.Data)
 
 	indexJson, err := generation.Index(essays)
 

@@ -93,12 +93,12 @@
 
     </script>
     <div id="essay-page" class="container mx-auto p-8 space-y-2">
-        <ul id="essay-page-table" class="page-table container mx-auto space-y-4 list-outside list-none">
+        <ul id="essay-page-table" class="page-table container mx-auto space-y-4 list-outside list-none ">
             ${{essayPage}}
         </ul>
         <div class="page-bar flex justify-end space-x-4">
             <div id="page-size-select">
-                <select id="page-size" name="page-size" title="page-size" class="rounded hover:ring-1">
+                <select id="page-size" name="page-size" title="page-size" class="transition delay-150 duration-300 ease-in-out rounded hover:ring-1">
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="5" selected>5</option>
@@ -107,11 +107,11 @@
                 </select>
                 <span>条/页</span>
             </div>
-            <button id="page-current-previous" class="border rounded min-w-16 hover:ring-1">上一页</button>
-            <select id="page-current" name="page-current" title="page-current" class="rounded hover:ring-1">
+            <button id="page-current-previous" class="transition delay-150 duration-300 ease-in-out border rounded min-w-16 hover:ring-1">上一页</button>
+            <select id="page-current" name="page-current" title="page-current" class="transition delay-150 duration-300 ease-in-out rounded hover:ring-1">
                 <option value="1" selected>1</option>
             </select>
-            <button id="page-current-next" class="border rounded min-w-16 hover:ring-1">下一页</button>
+            <button id="page-current-next" class="transition delay-150 duration-300 ease-in-out border rounded min-w-16 hover:ring-1">下一页</button>
         </div>
     </div>
 </body>
