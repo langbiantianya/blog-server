@@ -23,6 +23,7 @@
   - [ ] ...
 - [ ] 静态代理
   - [ ] 代理文章
+- [ ] 替换模板引擎为[html/template](https://pkg.go.dev/html/template)
 
 ## 技术选型
 
