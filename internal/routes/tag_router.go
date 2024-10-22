@@ -24,8 +24,7 @@ func NewTagRouter(tagService service.ITagService) ITagRouter {
 func (tag TagRouter) List(c *gin.Context) {
 	res, err := tag.tagService.List()
 	if err != nil {
-		c.Error(err)
-		return
+		panic(err)
 	}
 	c.JSON(http.StatusOK, res)
 

@@ -15,7 +15,7 @@ type ApiRoutes struct {
 
 func StartApiServer(port int, apiRoutes *ApiRoutes) {
 	r := gin.Default()
-	r.Use(middleware.PanicRecovery, middleware.ErrorHandler)
+	r.Use(middleware.PanicRecovery)
 	apiRoutes.apiV1(r)
 	r.Run(fmt.Sprintf(":%d", port))
 }

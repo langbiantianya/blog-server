@@ -6,19 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>${{title}}</title>
+    <title>{{.Title}}</title>
 </head>
 
 <body>
     <div class="container mx-auto p-8 space-y-2 divide-y divide-dashed">
         <div id="tag" class="flex space-x-4">
-            ${{tag}}
+            {{range .Tags}}
+            <fluent-badge appearance="accent" class="tag-item text-xs p-1">{{.Name}}</fluent-badge>
+            {{end}}
         </div>
         <div id="post" class="">
-            <h1 class="text-xl font-bold">${{title}}</h1>
+            <h1 class="text-xl font-bold">{{.Title}}</h1>
             <hr />
             <div id="post-content">
-                ${{post}}
+                {{.Post}}
             </div>
         </div>
     </div>

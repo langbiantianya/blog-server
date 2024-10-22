@@ -99,7 +99,25 @@
     </script>
     <div id="essay-page" class="container mx-auto p-8 space-y-2">
         <ul id="essay-page-table" class="page-table container mx-auto space-y-4 list-outside list-none ">
-            ${{essayPage}}
+            {{range .}}
+            <li id="page-item-{{.ID}}">
+                <fluent-card
+                    class="page-item transition delay-150 duration-300 ease-in divide-y divide-dashed max-h-32 min-h-10 truncate rounded hover:transition-all hover:shadow-xl">
+                    <div class="page-item-tag flex space-x-4">
+                        {{range .Tags}}
+                        <fluent-badge appearance="accent" class="tag-item text-xs p-1">{{.Name}}</fluent-badge>
+                        {{end}}
+                    </div>
+                    <div>
+                        <a class="page-item-href cursor-pointer" href="/post/{{.ID}}">
+                            <h1 class="page-item-title text-xl font-bold">{{.Title}}</h1>
+                            <hr />
+                            <div class="page-item-post">{{.Post}}</div>
+                        </a>
+                    </div>
+                </fluent-card>
+            </li>
+            {{end}}
         </ul>
         <div class="page-bar flex justify-end space-x-4">
             <div id="page-size-select">

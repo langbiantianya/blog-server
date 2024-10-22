@@ -3,10 +3,11 @@ package generation
 import (
 	"blog-server/internal/entity"
 	"blog-server/public/utils"
+	"bytes"
 	"io"
 	"os"
-	"strconv"
 	"strings"
+	"text/template"
 )
 
 func ApplayTemplate(postTemplatePath, tagTemplatePath, title string, tag []string, postHtmlStr string) (string, error) {
@@ -54,60 +55,33 @@ func ApplayTemplate(postTemplatePath, tagTemplatePath, title string, tag []strin
 	return htmlStr, nil
 }
 
-// 生成主页
-func GenerationHomePage(homePageTemplatePath, pageItemTemplatePath, tagTemplatePath string, essays []entity.Essay) (string, error) {
-	// 加载模板
-	homePageTemplateFile, err := os.Open(homePageTemplatePath)
-
+func GenerationPostV2(postTemplatePath string, essay entity.Essay) (string, error) {
+	postTemplate, err := template.ParseFiles(postTemplatePath)
 	if err != nil {
 		return "", err
 	}
-	defer homePageTemplateFile.Close()
-
-	homePageTemplateByteArray, err := io.ReadAll(homePageTemplateFile)
+	var buf bytes.Buffer
+	err = postTemplate.Execute(&buf, essay)
 	if err != nil {
 		return "", err
 	}
+	return buf.String(), nil
+}
 
-	tagTemplateFile, err := os.Open(tagTemplatePath)
+func GenerationHomePageV2(homePageTemplatePath string, essays []entity.Essay) (string, error) {
+	essays = utils.Map(essays, func(index int, item entity.Essay) (entity.Essay, error) {
+		item.Post = Md2html(item.Title, item.Post)
+		return item, nil
+	})
 
+	homePageTemplate, err := template.ParseFiles(homePageTemplatePath)
 	if err != nil {
 		return "", err
 	}
-	defer homePageTemplateFile.Close()
-
-	tagTemplateByteArray, err := io.ReadAll(tagTemplateFile)
+	var buf bytes.Buffer
+	err = homePageTemplate.Execute(&buf, essays)
 	if err != nil {
 		return "", err
 	}
-
-	pageItemTemplateFile, err := os.Open(pageItemTemplatePath)
-
-	if err != nil {
-		return "", err
-	}
-	defer homePageTemplateFile.Close()
-
-	pageItemTemplateByteArray, err := io.ReadAll(pageItemTemplateFile)
-	if err != nil {
-		return "", err
-	}
-	// 添加替换模板
-	htmlStr := string(homePageTemplateByteArray)
-	pageItemStr := ""
-	for index, essay := range essays {
-		if index == 5 {
-			break
-		}
-		_pageItemStr := strings.ReplaceAll(string(pageItemTemplateByteArray), "${{title}}", essay.Title)
-		_pageItemStr = strings.ReplaceAll(_pageItemStr, "${{post}}", Md2html(essay.Title, essay.Post))
-		_pageItemStr = strings.ReplaceAll(_pageItemStr, "${{id}}", strconv.FormatUint(uint64(essay.ID), 10))
-		_tagStr := ""
-		for _, tag := range essay.Tags {
-			_tagStr = _tagStr + strings.ReplaceAll(string(tagTemplateByteArray), "${{tag}}", tag.Name)
-		}
-		pageItemStr = pageItemStr + strings.ReplaceAll(_pageItemStr, "${{tag}}", _tagStr)
-	}
-	htmlStr = strings.ReplaceAll(htmlStr, "${{essayPage}}", pageItemStr)
-	return htmlStr, nil
+	return buf.String(), nil
 }

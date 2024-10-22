@@ -86,22 +86,12 @@ func (essay EssayService) Hide(id uint) error {
 
 	// 生成主页
 	staticPath := conf.GetConfig().StaticPath
-	homeTemplatePath, err := utils.GetFilePath(staticPath+"/template/home.html", staticPath+"/template/defaultHome.html")
+	homeTemplatePath, err := utils.GetFilePath(staticPath+"/template/home.gohtml", staticPath+"/template/defaultHome.gohtml")
 	if err != nil {
 		return err
 	}
 
-	pagsItemTemplatePath, err := utils.GetFilePath(staticPath+"/template/pageItem.html", staticPath+"/template/defaultPagsItem.html")
-	if err != nil {
-		return err
-	}
-
-	tagTemplatePath, err := utils.GetFilePath(staticPath+"/template/tag.html", staticPath+"/template/defaultTag.html")
-	if err != nil {
-		return err
-	}
-
-	homeHtml, err := generation.GenerationHomePage(homeTemplatePath, pagsItemTemplatePath, tagTemplatePath, essays)
+	homeHtml, err := generation.GenerationHomePageV2(homeTemplatePath, essays)
 	if err != nil {
 		return err
 	}
@@ -124,33 +114,22 @@ func (essay EssayService) Publish(id uint) error {
 	if err != nil {
 		return err
 	}
-	var md2htmlStr string
+
 	if res != nil {
-		md2htmlStr = generation.Md2html(res.Title, res.Post)
+		res.Post = generation.Md2html(res.Title, res.Post)
 	} else {
 		return errors.New("没有找到文章")
 	}
 
 	// 获取模板
 	staticPath := conf.GetConfig().StaticPath
-	postTemplatePath, err := utils.GetFilePath(staticPath+"/template/post.html", staticPath+"/template/defaultPost.html")
-	if err != nil {
-		return err
-	}
-	// 取出tag
-	tag := utils.Map(res.Tags, func(index int, item entity.Tag) (string, error) {
-		return item.Name, nil
-	})
-
-	// 获取模板
-
-	tagTemplatePath, err := utils.GetFilePath(staticPath+"/template/tag.html", staticPath+"/template/defaultTag.html")
+	postTemplatePath, err := utils.GetFilePath(staticPath+"/template/post.gohtml", staticPath+"/template/defaultPost.gohtml")
 	if err != nil {
 		return err
 	}
 
 	// 生成页面文件
-	htmlStr, err := generation.ApplayTemplate(postTemplatePath, tagTemplatePath, res.Title, tag, md2htmlStr)
+	htmlStr, err := generation.GenerationPostV2(postTemplatePath, *res)
 
 	if err != nil {
 		return nil
@@ -186,16 +165,12 @@ func (essay EssayService) Publish(id uint) error {
 	}
 
 	// 生成主页
-	homeTemplatePath, err := utils.GetFilePath(staticPath+"/template/home.html", staticPath+"/template/defaultHome.html")
+	homeTemplatePath, err := utils.GetFilePath(staticPath+"/template/home.gohtml", staticPath+"/template/defaultHome.gohtml")
 	if err != nil {
 		return err
 	}
 
-	pagsItemTemplatePath, err := utils.GetFilePath(staticPath+"/template/pageItem.html", staticPath+"/template/defaultPagsItem.html")
-	if err != nil {
-		return err
-	}
-	homeHtml, err := generation.GenerationHomePage(homeTemplatePath, pagsItemTemplatePath, tagTemplatePath, essays)
+	homeHtml, err := generation.GenerationHomePageV2(homeTemplatePath, essays)
 	if err != nil {
 		return err
 	}
