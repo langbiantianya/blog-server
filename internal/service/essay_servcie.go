@@ -10,10 +10,12 @@ import (
 	"blog-server/public/utils"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 )
 
 type IEssayService interface {
+	InitBlog() error
 	Info(uint) (*entity.Essay, error)
 	List(dto.EssayDTO) (*vo.PaginationVO[[]entity.Essay], error)
 	Add(entity.Essay) error
@@ -29,10 +31,85 @@ type EssayService struct {
 }
 
 func NewEssayService(essayRepo repo.IEssayRepo, tagRepo repo.ITagRepo) IEssayService {
-	return &EssayService{
+	service := EssayService{
 		essayRepo: essayRepo,
 		tagRepo:   tagRepo,
 	}
+	err := service.InitBlog()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return &service
+}
+
+func (essay EssayService) InitBlog() error {
+	staticPath := conf.GetConfig().StaticPath
+	essays, err := essay.essayRepo.Find(dto.EssayDTO{
+		Hide: false,
+	})
+	if err != nil {
+		return err
+	}
+	// 生成索引
+	indexJson, err := generation.Index(essays.Data)
+	if err != nil {
+		return err
+	}
+	err = generation.WireStr2File(fmt.Sprintf("%s/index.json", conf.GetConfig().StaticOutPath), indexJson)
+	if err != nil {
+		return err
+	}
+	log.Println("索引生成完成")
+	// 生成文章
+	postTemplatePath, err := utils.GetFilePath(staticPath+"/template/post.gohtml", staticPath+"/template/defaultPost.gohtml")
+	if err != nil {
+		return err
+	}
+	for _, essay := range essays.Data {
+		go func() {
+			log.Println("正在生成《" + essay.Title + "》")
+			postHtml, err := generation.GenerationPostV2(postTemplatePath, essay)
+			if err != nil {
+				log.Fatal(err)
+			}
+			// 写入文件
+			err = generation.WireStr2File(fmt.Sprintf("%s/post/%d/index.html", conf.GetConfig().StaticOutPath, essay.ID), postHtml)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
+	}
+
+	// 生成主页
+	homeTemplatePath, err := utils.GetFilePath(staticPath+"/template/home.gohtml", staticPath+"/template/defaultHome.gohtml")
+	if err != nil {
+		return err
+	}
+
+	homeHtml, err := generation.GenerationHomePageV2(homeTemplatePath, essays.Data)
+	if err != nil {
+		return err
+	}
+	err = generation.WireStr2File(fmt.Sprintf("%s/index.html", conf.GetConfig().StaticOutPath), homeHtml)
+	if err != nil {
+		return err
+	}
+	log.Println("主页生成完成")
+	// 生成搜索
+	searchTemplatePath, err := utils.GetFilePath(staticPath+"/template/search.gohtml", staticPath+"/template/defaultSearch.gohtml")
+	if err != nil {
+		return err
+	}
+	searchHtml, err := generation.GenerationSearch(searchTemplatePath)
+	if err != nil {
+		return err
+	}
+	err = generation.WireStr2File(fmt.Sprintf("%s/search/index.html", conf.GetConfig().StaticOutPath), searchHtml)
+	if err != nil {
+		return err
+	}
+	log.Println("搜索生成完成")
+	return nil
 }
 
 func (essay EssayService) Info(id uint) (*entity.Essay, error) {

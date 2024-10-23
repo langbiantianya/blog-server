@@ -4,6 +4,8 @@ import (
 	"blog-server/internal/entity"
 	"blog-server/public/utils"
 	"bytes"
+	"io/ioutil"
+	"os"
 	"text/template"
 )
 
@@ -36,4 +38,18 @@ func GenerationHomePageV2(homePageTemplatePath string, essays []entity.Essay) (s
 		return "", err
 	}
 	return buf.String(), nil
+}
+
+func GenerationSearch(searchTemplatePath string) (string, error) {
+	// 使用 os 包打开文件
+	searchTemplate, err := os.Open(searchTemplatePath)
+	if err != nil {
+		return "", err
+	}
+	defer searchTemplate.Close()
+	searchhtml, err := ioutil.ReadAll(searchTemplate)
+	if err != nil {
+		return "", err
+	}
+	return string(searchhtml), nil
 }
