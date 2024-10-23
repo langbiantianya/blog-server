@@ -4,7 +4,7 @@ import (
 	"blog-server/internal/entity"
 	"blog-server/public/utils"
 	"bytes"
-	"io/ioutil"
+	"io"
 	"os"
 	"text/template"
 )
@@ -15,6 +15,7 @@ func GenerationPostV2(postTemplatePath string, essay entity.Essay) (string, erro
 		return "", err
 	}
 	var buf bytes.Buffer
+	essay.Post = Md2html(essay.Title, essay.Post)
 	err = postTemplate.Execute(&buf, essay)
 	if err != nil {
 		return "", err
@@ -47,7 +48,7 @@ func GenerationSearch(searchTemplatePath string) (string, error) {
 		return "", err
 	}
 	defer searchTemplate.Close()
-	searchhtml, err := ioutil.ReadAll(searchTemplate)
+	searchhtml, err := io.ReadAll(searchTemplate)
 	if err != nil {
 		return "", err
 	}
