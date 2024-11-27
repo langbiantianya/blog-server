@@ -23,11 +23,13 @@ type IEssayService interface {
 	Hide(uint) error
 	Delete(uint) error
 	Publish(uint) error
+	SaveFile(func() string) error
 }
 
 type EssayService struct {
 	essayRepo repo.IEssayRepo
 	tagRepo   repo.ITagRepo
+	fileRepo  repo.IFileRepo
 }
 
 func NewEssayService(essayRepo repo.IEssayRepo, tagRepo repo.ITagRepo) IEssayService {
@@ -262,5 +264,16 @@ func (essay EssayService) Publish(id uint) error {
 		return err
 	}
 
+	return nil
+}
+
+func (essay EssayService) SaveFile(filePath func() string) error {
+
+	err := essay.fileRepo.Add(entity.File{
+		Path: filePath(),
+	})
+	if err != nil {
+		return err
+	}
 	return nil
 }

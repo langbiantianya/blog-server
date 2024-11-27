@@ -1,11 +1,15 @@
 package routes
 
 import (
+	"blog-server/internal/conf"
 	"blog-server/internal/entity"
 	"blog-server/internal/entity/dto"
 	"blog-server/internal/service"
+	"fmt"
 	"net/http"
+	"path/filepath"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,6 +22,7 @@ type IEssayRouter interface {
 	Hide(*gin.Context)
 	Delete(*gin.Context)
 	Publish(*gin.Context)
+	Upload(*gin.Context)
 }
 
 type EssayRouter struct {
@@ -153,4 +158,28 @@ func (essay EssayRouter) Publish(c *gin.Context) {
 
 	}
 	c.String(http.StatusOK, "OK")
+}
+
+func (essay EssayRouter) Upload(c *gin.Context) {
+	form, err := c.MultipartForm()
+	if err != nil {
+		panic(err)
+	}
+	files := form.File["file[]"]
+	filePaths := []string{}
+	for _, file := range files {
+		essay.essayService.SaveFile(func() string {
+			filename := file.Filename
+			if filename == "" {
+				filename = fmt.Sprintf("%d%s", time.Now().Unix(), filepath.Ext(file.Filename))
+			}
+			filePath := conf.GetConfig().StaticPath + "files/md/" + filename
+			if err := c.SaveUploadedFile(file, filePath); err != nil {
+				panic(err)
+			}
+			filePaths = append(filePaths, filePath)
+			return filePath
+		})
+	}
+
 }

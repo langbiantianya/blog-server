@@ -33,7 +33,7 @@ func main() {
 				if err != nil {
 					panic(err)
 				}
-				db.AutoMigrate(&entity.Essay{}, &entity.Tag{})
+				db.AutoMigrate(entity.MigeateEntity...)
 				InitApp(db, ctx).StartServer()
 				return nil
 			}, func() error {

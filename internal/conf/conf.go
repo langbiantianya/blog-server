@@ -7,6 +7,7 @@ type Config struct {
 	ApiPort       int
 	StaticPort    int
 	StaticOutPath string
+	MDPath        string
 }
 
 var conf Config
@@ -22,5 +23,6 @@ func InitConfig(ctx *cli.Context) {
 		StaticOutPath: ctx.String("outPath"),
 		ApiPort:       port[1],
 		StaticPort:    port[0],
+		MDPath: ctx.String("md"),
 	}
 }

@@ -11,12 +11,13 @@ import (
 )
 
 type IEssayRepo interface {
-	Info(uint) (*entity.Essay, error)
+	IRepoPage[entity.Essay, dto.EssayDTO, entity.Essay]
+	// Info(uint) (*entity.Essay, error)
 	Find(dto.EssayDTO) (*vo.PaginationVO[[]entity.Essay], error)
-	Add(entity.Essay) error
+	// Add(entity.Essay) error
 	Update(entity.Essay) error
 	Hide(uint) error
-	Delete(uint) error
+	// Delete(uint) error
 	Publish(uint) error
 }
 

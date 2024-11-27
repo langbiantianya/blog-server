@@ -20,7 +20,7 @@ func NewTagService(tagRepo repo.ITagRepo) ITagService {
 }
 
 func (t TagService) List() (*[]entity.Tag, error) {
-	res, err := t.tagRepo.List()
+	res, err := t.tagRepo.List(nil)
 	if err != nil {
 		return nil, err
 	}

@@ -8,10 +8,7 @@ import (
 )
 
 type ITagRepo interface {
-	Info(uint) (*entity.Tag, error)
-	List() (*[]entity.Tag, error)
-	Add(entity.Tag) error
-	Delete(uint) error
+	IRepo[entity.Tag]
 }
 
 type TagRepo struct {
@@ -32,7 +29,7 @@ func (tag TagRepo) Info(id uint) (*entity.Tag, error) {
 	return &res, nil
 }
 
-func (tag TagRepo) List() (*[]entity.Tag, error) {
+func (tag TagRepo) List(any) (*[]entity.Tag, error) {
 	var res []entity.Tag
 	if result := tag.db.Model(&entity.Tag{}).Find(&res); result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, result.Error
