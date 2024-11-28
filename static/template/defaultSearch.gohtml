@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>搜索</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            corePlugins: {
+                preflight: true,
+            },
+        };
+    </script>
     <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <script type="module">
         import Fuse from 'https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.mjs'

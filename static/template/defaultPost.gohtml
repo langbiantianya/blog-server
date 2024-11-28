@@ -6,6 +6,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            corePlugins: {
+                preflight: true,
+            },
+        };
+    </script>
+    <style type="text/tailwindcss">
+        #post {
+            h1 {
+                font-size: 2em;
+                margin: 0.67em 0;
+            }
+            
+            h2 {
+                font-size: 1.5em;
+                margin: 0.75em 0;
+            }
+            
+            h3 {
+                font-size: 1.17em;
+                margin: 0.83em 0;
+            }
+            
+            h4 {
+                font-size: 1em;
+                margin: 1.33em 0;
+            }
+            
+            h5 {
+                font-size: 0.83em;
+                margin: 1.67em 0;
+            }
+            
+            h6 {
+                font-size: 0.67em;
+                margin: 2.33em 0;
+            }
+
+            a {
+                text-decoration: none; /* 去掉下划线 */
+                color: #007BFF; /* 设置链接颜色 */
+                transition: color 0.3s ease; /* 平滑过渡效果 */
+            }
+            
+            a:hover {
+                color: #0056b3; /* 鼠标悬停时的颜色变化 */
+            }
+            
+            a:active {
+                color: #FFC107; /* 鼠标点击时的颜色变化 */
+            }
+        }
+    </style>
     <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <title>{{.Title}}</title>
 </head>
@@ -14,7 +68,7 @@
     <div class="container mx-auto p-8 space-y-2">
         <div class="flex justify-between">
             <fluent-breadcrumb>
-                <fluent-breadcrumb-item href="#" onclick="window.history.back(); return false;">
+                <fluent-breadcrumb-item href="/">
                     <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <path d="M9 18V42H39V18L24 6L9 18Z" fill="none" stroke="#333" stroke-width="4"
