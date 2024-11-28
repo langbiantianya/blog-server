@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <title>欢迎</title>
@@ -24,7 +24,7 @@
                 }).join("")}
                                      </div>
                                      <div>
-                                         <a class="page-item-href" href="/post/${value.id}">
+                                         <a class="page-item-href" href="/post/${value.id}" >
                                              <h1 class="page-item-title text-xl font-bold">${value.title}</h1>
                                              <hr/>
                                              <div class="page-item-post max-h-20 min-h-5 truncate">${value.post}</div>
@@ -136,7 +136,7 @@
                         {{end}}
                     </div>
                     <div>
-                        <a class="page-item-href cursor-pointer" href="/post/{{.ID}}">
+                        <a class="page-item-href cursor-pointer" href="/post/{{.ID}}" >
                             <h1 class="page-item-title text-xl font-bold">{{.Title}}</h1>
                             <hr />
                             <div class="page-item-post">{{.Post}}</div>

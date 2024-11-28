@@ -3,12 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>搜索</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <script type="module">
-        import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.mjs'
+        import Fuse from 'https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.mjs'
 
         let postIndex = []
         let fuse = {}
@@ -30,7 +30,7 @@
                 }).join("")}
                                      </div>
                                      <div>
-                                         <a class="page-item-href" href="/post/${value.id}?search=true">
+                                         <a class="page-item-href" href="/post/${value.id}?search=true" target="_blank">
                                              <h1 class="page-item-title text-xl font-bold">${value.title}</h1>
                                              <hr/>
                                              <div class="page-item-post max-h-20 min-h-5 truncate">${value.post}</div>
