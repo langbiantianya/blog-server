@@ -76,7 +76,7 @@ func (essay EssayService) InitBlog() error {
 	if err != nil {
 		return err
 	}
-	for _, essay := range essays.Data {
+	for _, essay := range allEssays.Data {
 		go func() {
 			log.Println("正在生成《" + essay.Title + "》")
 			postHtml, err := generation.GenerationPostV2(postTemplatePath, essay)
