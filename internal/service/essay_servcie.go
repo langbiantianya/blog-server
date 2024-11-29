@@ -55,8 +55,14 @@ func (essay EssayService) InitBlog() error {
 	if err != nil {
 		return err
 	}
+	allEssays, err := essay.essayRepo.Find(dto.EssayDTO{
+		Hide: false,
+	})
+	if err != nil {
+		return err
+	}
 	// 生成索引
-	indexJson, err := generation.Index(essays.Data)
+	indexJson, err := generation.Index(allEssays.Data)
 	if err != nil {
 		return err
 	}
