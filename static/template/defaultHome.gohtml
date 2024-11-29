@@ -48,6 +48,7 @@
                             </li>`.trim()
             }).join("").trim()
             document.getElementById("essay-page-table").innerHTML = tableHtml
+            hljs.highlightAll()
         }
         function renderPageCurrentSelect() {
             let totalPage = Math.ceil(postIndex.length / pageSize)
