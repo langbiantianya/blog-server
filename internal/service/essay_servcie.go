@@ -47,6 +47,9 @@ func NewEssayService(essayRepo repo.IEssayRepo, tagRepo repo.ITagRepo) IEssaySer
 func (essay EssayService) InitBlog() error {
 	staticPath := conf.GetConfig().StaticPath
 	essays, err := essay.essayRepo.Find(dto.EssayDTO{
+		PaginationDTO: dto.PaginationDTO{
+			Limit: 5,
+		},
 		Hide: false,
 	})
 	if err != nil {

@@ -13,13 +13,13 @@ func WireStr2File(filePath string, content string) error {
 	dir := filePath[:strings.LastIndex(filePath, "/")]
 	_, err := os.Stat(dir)
 	if err != nil && os.IsNotExist(err) {
-		err = os.MkdirAll(dir, 0644)
+		err = os.MkdirAll(dir, 0777)
 		if err != nil {
 			return err
 		}
 	}
 
-	file, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+	file, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0777)
 	if err != nil {
 		return err
 	}

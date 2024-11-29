@@ -23,7 +23,7 @@ func main() {
 		Action: func(ctx *cli.Context) error {
 			cmd.Run(context.Background(), func() error {
 				conf.InitConfig(ctx)
-				err := os.MkdirAll(path.Clean("./static/sqlite/"), 0755)
+				err := os.MkdirAll(path.Clean("./static/sqlite/"), 0777)
 				if err != nil {
 					panic(err)
 				}
